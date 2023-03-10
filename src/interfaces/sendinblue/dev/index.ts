@@ -26,7 +26,7 @@ export interface SendTransactionalMail {
 	to: Recipient[];
 	templateId: number;
 	params: { [k: string]: string };
-	attachment: Attachment[];
+	attachments: Attachment[];
 }
 
 export function SendTemplate(body: SendTransactionalMail): Promise<APIResponse> {
