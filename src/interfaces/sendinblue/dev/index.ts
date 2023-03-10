@@ -24,7 +24,7 @@ export interface Attachment {
 
 export interface SendTransactionalMail {
 	to: Recipient[];
-	templateId: string;
+	templateId: number;
 	params: { [k: string]: string };
 	attachment: Attachment[];
 }
