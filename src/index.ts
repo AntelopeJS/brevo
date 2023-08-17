@@ -1,18 +1,13 @@
-import { internal } from '@ajs.local/sendinblue/dev';
-import { SendinblueHandler } from './sendinblue';
-
-let sendinblue: SendinblueHandler;
+import { ImplementInterface } from '@ajs/core/1';
+import { setConfig } from './sendinblue';
 
 export async function construct(config: any): Promise<void> {
-	sendinblue = new SendinblueHandler(config);
+	setConfig(config);
+	await ImplementInterface(import('@ajs.local/sendinblue/dev'), import('./implementations/sendinblue/dev'));
 }
 
 export function destroy(): void {}
 
-export function start(): void {
-	internal.sendTransactionalMail.onCall((body) => sendinblue.sendTransactionalMail(body));
-}
+export function start(): void {}
 
-export function stop(): void {
-	internal.sendTransactionalMail.detach();
-}
+export function stop(): void {}
