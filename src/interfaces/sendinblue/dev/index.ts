@@ -4,7 +4,7 @@ import { AsyncProxy } from '@ajs/core/1';
  * @internal
  */
 export namespace internal {
-	export const sendTransactionalMail = new AsyncProxy<(body: SendTransactionalMail) => Promise<APIResponse>>();
+	export const sendTransactionalMailProxy = new AsyncProxy<(body: SendTransactionalMail) => Promise<APIResponse>>();
 }
 
 export interface APIResponse {
@@ -30,5 +30,5 @@ export interface SendTransactionalMail {
 }
 
 export function SendTemplate(body: SendTransactionalMail): Promise<APIResponse> {
-	return internal.sendTransactionalMail.call(body);
+	return internal.sendTransactionalMailProxy.call(body);
 }
