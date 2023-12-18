@@ -30,7 +30,7 @@ export interface Attachment {
 export interface SendTransactionalMail {
 	to: Recipient[];
 	templateId: number;
-	params?: { [k: string]: string };
+	params?: { [k: string]: string | undefined };
 	attachment?: Attachment[];
 }
 
@@ -41,11 +41,7 @@ export function SendTemplate(body: SendTransactionalMail): Promise<APIResponse> 
 export interface AddContact {
 	email?: string;
 	ext_id?: string;
-	attributes?: {
-		sms?: never;
-		nom?: string;
-		prenom?: string;
-	};
+	attributes?: { [k: string]: string | undefined };
 	emailBlacklisted?: boolean;
 	smsBlacklisted?: boolean;
 	listIds?: number[];
@@ -54,11 +50,7 @@ export interface AddContact {
 }
 
 export interface UpdateContact {
-	attributes?: {
-		sms?: never;
-		nom?: string;
-		prenom?: string;
-	};
+	attributes?: { [k: string]: string | undefined };
 	ext_id?: string;
 	emailBlacklisted?: boolean;
 	smsBlacklisted?: boolean;
