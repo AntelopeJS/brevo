@@ -35,7 +35,9 @@ export async function addContact(body: AddContact): Promise<APIResponse> {
 }
 
 export async function updateContact(identifier: string, body: UpdateContact): Promise<APIResponse> {
-	const response = await axios.put(`https://api.brevo.com/v3/contacts/${identifier}`, body, {
+	const encodedIdentifier = encodeURIComponent(identifier);
+
+	const response = await axios.put(`https://api.brevo.com/v3/contacts/${encodedIdentifier}`, body, {
 		headers: {
 			accept: 'application/json',
 			'content-type': 'application/json',
@@ -47,7 +49,9 @@ export async function updateContact(identifier: string, body: UpdateContact): Pr
 }
 
 export async function deleteContact(identifier: string): Promise<APIResponse> {
-	const response = await axios.delete(`https://api.brevo.com/v3/contacts/${identifier}`, {
+	const encodedIdentifier = encodeURIComponent(identifier);
+
+	const response = await axios.delete(`https://api.brevo.com/v3/contacts/${encodedIdentifier}`, {
 		headers: {
 			accept: 'application/json',
 			'content-type': 'application/json',
