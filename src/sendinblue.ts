@@ -69,7 +69,7 @@ export async function deleteContact(identifier: string): Promise<APIResponse> {
 }
 
 export async function addContactList(body: AddContactList): Promise<APIResponse> {
-	const response = await axios.post(`https://api.brevo.com/v3/contacts/list/`, body, {
+	const response = await axios.post(`https://api.brevo.com/v3/contacts/lists`, body, {
 		headers: {
 			accept: 'application/json',
 			'content-type': 'application/json',
@@ -81,7 +81,7 @@ export async function addContactList(body: AddContactList): Promise<APIResponse>
 }
 
 export async function deleteContactList(listId: number): Promise<APIResponse> {
-	const response = await axios.delete(`https://api.brevo.com/v3/contacts/list/${listId}`, {
+	const response = await axios.delete(`https://api.brevo.com/v3/contacts/lists/${listId}`, {
 		headers: {
 			accept: 'application/json',
 			'content-type': 'application/json',
