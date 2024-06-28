@@ -10,6 +10,8 @@ export namespace internal {
 		(identifier: string, body: UpdateContact) => Promise<APIResponse>
 	>();
 	export const deleteContactProxy = new AsyncProxy<(identifier: string) => Promise<APIResponse>>();
+	export const addContactListProxy = new AsyncProxy<(body: AddContactList) => Promise<APIResponse>>();
+	export const deleteContactListProxy = new AsyncProxy<(identifier: number) => Promise<APIResponse>>();
 }
 
 export interface APIResponse {
@@ -59,6 +61,11 @@ export interface UpdateContact {
 	smtpBlacklistSender?: string[];
 }
 
+export interface AddContactList {
+	name: string;
+	folderId: number;
+}
+
 export function AddContact(body: AddContact): Promise<APIResponse> {
 	return internal.addContactProxy.call(body);
 }
@@ -69,4 +76,12 @@ export function updateContact(identifier: string, body: UpdateContact): Promise<
 
 export function deleteContact(identifier: string): Promise<APIResponse> {
 	return internal.deleteContactProxy.call(identifier);
+}
+
+export function addContactListProxy(body: AddContactList): Promise<APIResponse> {
+	return internal.addContactListProxy.call(body);
+}
+
+export function deleteContactListProxy(identifier: number): Promise<APIResponse> {
+	return internal.deleteContactListProxy.call(identifier);
 }
