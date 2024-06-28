@@ -78,10 +78,10 @@ export function deleteContact(identifier: string): Promise<APIResponse> {
 	return internal.deleteContactProxy.call(identifier);
 }
 
-export function addContactListProxy(body: AddContactList): Promise<APIResponse> {
+export function addContactList(body: AddContactList): Promise<APIResponse> {
 	return internal.addContactListProxy.call(body);
 }
 
-export function deleteContactListProxy(identifier: number): Promise<APIResponse> {
+export function deleteContactList(identifier: number): Promise<APIResponse> {
 	return internal.deleteContactListProxy.call(identifier);
 }
