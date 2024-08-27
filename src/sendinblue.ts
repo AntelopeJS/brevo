@@ -4,6 +4,7 @@ import {
 	SendTransactionalMail,
 	UpdateContact,
 	AddContactList,
+	Contact,
 } from '@ajs.local/sendinblue/dev';
 import axios from 'axios';
 
@@ -18,6 +19,20 @@ export function setConfig(newConfig: SendinblueConfig) {
 
 export async function sendTransactionalMail(body: SendTransactionalMail): Promise<APIResponse> {
 	const response = await axios.post('https://api.brevo.com/v3/smtp/email', body, {
+		headers: {
+			accept: 'application/json',
+			'content-type': 'application/json',
+			'api-key': config.apiKey,
+		},
+		validateStatus: () => true,
+	});
+	return { status: response.status, data: response.data };
+}
+
+export async function contactDetails(identifier: string): Promise<APIResponse<Contact>> {
+	const encodedIdentifier = encodeURIComponent(identifier);
+
+	const response = await axios.get(`https://api.brevo.com/v3/contacts/${encodedIdentifier}`, {
 		headers: {
 			accept: 'application/json',
 			'content-type': 'application/json',

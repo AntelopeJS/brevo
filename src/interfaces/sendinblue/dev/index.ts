@@ -5,6 +5,7 @@ import { AsyncProxy } from '@ajs/core/1';
  */
 export namespace internal {
 	export const sendTransactionalMailProxy = new AsyncProxy<(body: SendTransactionalMail) => Promise<APIResponse>>();
+	export const contactDetailsProxy = new AsyncProxy<(identifier: string) => Promise<APIResponse<Contact>>>();
 	export const addContactProxy = new AsyncProxy<(body: AddContact) => Promise<APIResponse>>();
 	export const updateContactProxy = new AsyncProxy<
 		(identifier: string, body: UpdateContact) => Promise<APIResponse>
@@ -14,9 +15,9 @@ export namespace internal {
 	export const deleteContactListProxy = new AsyncProxy<(identifier: number) => Promise<APIResponse>>();
 }
 
-export interface APIResponse {
+export interface APIResponse<T = any> {
 	status: number;
-	data: any;
+	data: T;
 }
 
 export interface Recipient {
@@ -38,6 +39,42 @@ export interface SendTransactionalMail {
 
 export function SendTemplate(body: SendTransactionalMail): Promise<APIResponse> {
 	return internal.sendTransactionalMailProxy.call(body);
+}
+
+export interface Contact {
+	email?: string;
+	id: number;
+	emailBlacklisted: boolean;
+	smsBlacklisted: boolean;
+	createdAt: string;
+	modifiedAt: string;
+	listIds: number[];
+	listUnsubscribed?: number[];
+	attributes: any;
+	statistics: {
+		messagesSent: { campaignId: number; eventTime: string }[];
+		hardBounces: { campaignId: number; eventTime: string }[];
+		softBounces: { campaignId: number; eventTime: string }[];
+		complaints: { campaignId: number; eventTime: string }[];
+		unsubscriptions: any;
+		opened?: {
+			campaignId: number;
+			count: number;
+			eventTime: string;
+			ip: string;
+		}[];
+		clicked?: {
+			campaignId: number;
+			links: {
+				count: number;
+				eventTime: string;
+				ip: string;
+				url: string;
+			}[];
+		}[];
+		transacAttributes: any[];
+		delivered: { campaignId: number; eventTime: string }[];
+	};
 }
 
 export interface AddContact {
@@ -64,6 +101,10 @@ export interface UpdateContact {
 export interface AddContactList {
 	name: string;
 	folderId: number;
+}
+
+export function contactDetails(identifier: string): Promise<APIResponse<Contact>> {
+	return internal.contactDetailsProxy.call(identifier);
 }
 
 export function AddContact(body: AddContact): Promise<APIResponse> {

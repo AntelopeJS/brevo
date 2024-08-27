@@ -2,6 +2,7 @@ import { AddContact, AddContactList, SendTransactionalMail, UpdateContact } from
 import {
 	addContact,
 	addContactList,
+	contactDetails,
 	deleteContact,
 	deleteContactList,
 	sendTransactionalMail,
@@ -10,6 +11,7 @@ import {
 
 export namespace internal {
 	export const sendTransactionalMailProxy = (body: SendTransactionalMail) => sendTransactionalMail(body);
+	export const contactDetailsProxy = (identifier: string) => contactDetails(identifier);
 	export const addContactProxy = (body: AddContact) => addContact(body);
 	export const updateContactProxy = (identifier: string, body: UpdateContact) => updateContact(identifier, body);
 	export const deleteContactProxy = (identifier: string) => deleteContact(identifier);
