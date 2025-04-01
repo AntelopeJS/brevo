@@ -5,15 +5,15 @@ import {
 	UpdateContact,
 	AddContactList,
 	Contact,
-} from '@ajs.local/sendinblue/dev';
+} from '@ajs.local/brevo/dev';
 import axios from 'axios';
 
-interface SendinblueConfig {
+interface BrevoConfig {
 	apiKey: string;
 }
 
-let config: SendinblueConfig;
-export function setConfig(newConfig: SendinblueConfig) {
+let config: BrevoConfig;
+export function setConfig(newConfig: BrevoConfig) {
 	config = newConfig;
 }
 

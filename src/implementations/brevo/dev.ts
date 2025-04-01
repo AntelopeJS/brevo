@@ -1,4 +1,4 @@
-import { AddContact, AddContactList, SendTransactionalMail, UpdateContact } from '@ajs.local/sendinblue/dev';
+import { AddContact, AddContactList, SendTransactionalMail, UpdateContact } from '@ajs.local/brevo/dev';
 import {
 	addContact,
 	addContactList,
@@ -7,7 +7,7 @@ import {
 	deleteContactList,
 	sendTransactionalMail,
 	updateContact,
-} from '../../sendinblue';
+} from '../../brevo';
 
 export namespace internal {
 	export const sendTransactionalMailProxy = (body: SendTransactionalMail) => sendTransactionalMail(body);

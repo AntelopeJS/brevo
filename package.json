@@ -1,8 +1,8 @@
 {
-	"name": "sendinblue",
+	"name": "brevo",
 	"version": "1.0.0",
 	"main": "dist/index.js",
-	"repository": "https://gitlab.altab.io/antelopejs/modules/sendinblue.git",
+	"repository": "https://gitlab.altab.io/antelopejs/modules/brevo.git",
 	"author": "Antony Rizzitelli <antony@altab.be>",
 	"license": "MIT",
 	"scripts": {
