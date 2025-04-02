@@ -1,8 +1,13 @@
 {
 	"name": "@antelopejs/brevo",
 	"version": "",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/AntelopeJS/brevo.git"
+	},
 	"main": "dist/index.js",
-	"license": "MIT",
+	"license": "Apache-2.0",
+	"packageManager": "pnpm@10.6.5",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
@@ -12,12 +17,6 @@
 	},
 	"lint-staged": {
 		"*.{js,jsx,ts,tsx}": "eslint"
-	},
-	"antelopeJs": {
-		"exportsPath": "dist/interfaces",
-		"imports": [
-			"core@1"
-		]
 	},
 	"commitlint": {
 		"extends": [
@@ -30,6 +29,12 @@
 				[]
 			]
 		}
+	},
+	"antelopeJs": {
+		"exportsPath": "dist/interfaces",
+		"imports": [
+			"core@1"
+		]
 	},
 	"dependencies": {
 		"@commitlint/config-conventional": "^16.2.1",
@@ -47,6 +52,5 @@
 	},
 	"devDependencies": {
 		"@types/express": "types/express"
-	},
-	"packageManager": "pnpm@10.6.5"
+	}
 }
