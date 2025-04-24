@@ -1,61 +1,52 @@
 {
-	"name": "@antelopejs/brevo",
-	"version": "0.0.1",
-	"description": "A flexible email module that implements the brevo interface of antelopejs",
-	"keywords": [
-		"antelopejs",
-		"brevo",
-		"email",
-		"mail",
-		"newsletter"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/AntelopeJS/brevo.git"
-	},
-	"main": "dist/index.js",
-	"files": [
-		"dist"
-	],
-	"license": "Apache-2.0",
-	"packageManager": "pnpm@10.6.5",
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-		"lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-		"build": "tsc",
-		"prepublishOnly": "npm run build"
-	},
-	"commitlint": {
-		"extends": [
-			"@commitlint/config-conventional"
-		],
-		"rules": {
-			"scope-case": [
-				2,
-				"never",
-				[]
-			]
-		}
-	},
-	"antelopeJs": {
-		"exportsPath": "dist/interfaces",
-		"imports": [
-			"core@1"
-		]
-	},
-	"dependencies": {
-		"axios": "^1.8.4"
-	},
-	"devDependencies": {
-		"@commitlint/config-conventional": "^16.2.1",
-		"@types/node": "^22.14.1",
-		"@typescript-eslint/eslint-plugin": "^5.17.0",
-		"@typescript-eslint/parser": "^5.17.0",
-		"commitlint": "^16.2.3",
-		"eslint": "^8.12.0",
-		"eslint-config-prettier": "^8.5.0",
-		"prettier": "^2.6.1",
-		"typescript": "^5.8.3"
-	}
+  "name": "@antelopejs/brevo",
+  "version": "0.0.1",
+  "description": "A flexible email module that implements the brevo interface of antelopejs",
+  "keywords": [
+    "antelopejs",
+    "brevo",
+    "email",
+    "mail",
+    "newsletter"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AntelopeJS/brevo.git"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.6.5",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write ."
+  },
+  "antelopeJs": {
+    "exportsPath": "dist/interfaces",
+    "imports": [
+      "core@beta"
+    ]
+  },
+  "dependencies": {
+    "axios": "^1.8.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.25.0",
+    "eslint": "^9.25.0",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.6",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.30.1"
+  }
 }
