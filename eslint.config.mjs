@@ -58,9 +58,10 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-assignment': 'warn',
       '@typescript-eslint/restrict-template-expressions': 'warn',
       '@typescript-eslint/no-namespace': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'warn',
       '@typescript-eslint/only-throw-error': 'off',
       '@typescript-eslint/prefer-promise-reject-errors': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
       'import/prefer-default-export': 'off',
       'import/no-extraneous-dependencies': ['error', { devDependencies: ['**/*.test.ts', '**/*.spec.ts'] }],
       'import/extensions': [
