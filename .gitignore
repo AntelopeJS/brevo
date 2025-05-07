@@ -294,7 +294,7 @@ dist/
 
 antelope.json
 antelope.*.json
-antelope_cache/
+.antelope/cache/
 # pnpm store
 .pnpm-store/
 

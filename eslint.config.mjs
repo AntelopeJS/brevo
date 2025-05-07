@@ -10,7 +10,7 @@ export default tseslint.config(
       'node_modules',
       'tmp',
       'dist',
-      'antelope_cache',
+      '.antelope/cache',
       'coverage',
       '.git',
       '*.log',
