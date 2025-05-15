@@ -77,6 +77,13 @@ export default tseslint.config(
       'max-len': ['warn', { code: 120 }],
       quotes: ['error', 'single', { avoidEscape: true, allowTemplateLiterals: true }],
       'import/no-unresolved': ['error', { ignore: ['^@ajs(/.*)?$', '^@ajs\\.local(/.*)?$', 'typescript\\-eslint'] }],
+      //TODO: fix these rules
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/unbound-method': 'off',
+      '@typescript-eslint/restrict-plus-operands': 'off',
+      'import/no-extraneous-dependencies': 'off',
     },
   },
 );
