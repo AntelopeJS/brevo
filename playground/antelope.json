@@ -1,0 +1,24 @@
+{
+  "name": "brevo-playground",
+  "version": "1.0.0",
+  "description": "Brevo playground module for testing and development",
+  "author": "Glastis",
+  "license": "MIT",
+  "modules": {
+    "brevo": {
+      "source": {
+        "type": "local",
+        "path": "..",
+        "installCommand": ["pnpm i", "npx tsc"]
+      }
+    },
+    "playground": {
+      "source": {
+        "type": "local",
+        "path": ".",
+        "installCommand": ["pnpm i", "npx tsc"]
+      }
+    }
+  },
+  "environments": {}
+}
