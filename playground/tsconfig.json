@@ -20,7 +20,7 @@
     "baseUrl": "src",
     "paths": {
       "@ajs.local/*": ["interfaces/*"],
-      "@ajs/brevo/*": ["../../.antelope/output/brevo/*"],
+      "@ajs/brevo/*": ["../../output/brevo/*"],
       "@ajs/*": ["../.antelope/interfaces.d/*"]
     }
   },
