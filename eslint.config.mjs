@@ -11,6 +11,7 @@ export default tseslint.config(
       'tmp',
       '**/dist',
       '**/.antelope',
+      'output',
       'coverage',
       '.git',
       '*.log',
