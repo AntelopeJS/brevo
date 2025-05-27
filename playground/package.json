@@ -12,14 +12,22 @@
   },
   "antelopeJs": {
     "imports": [
-      "core@beta",
-      "brevo@beta"
+      {
+        "name": "core@beta",
+        "skipInstall": true
+      },
+      {
+        "name": "brevo@dev",
+        "git": "git@github.com:AntelopeJS/interfaces-private.git",
+        "skipInstall": true
+      }
     ],
     "baseUrl": "dist",
     "paths": {
       "@/*": [
         "*"
       ]
-    }
+    },
+    "importsOptional": []
   }
 }
