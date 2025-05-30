@@ -17,8 +17,9 @@
   "files": [
     "dist"
   ],
+  "private": true,
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "license": "Apache-2.0",
   "packageManager": "pnpm@10.6.5",

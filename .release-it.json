@@ -8,6 +8,9 @@
     "releaseName": "v${version}",
     "web": true
   },
+  "npm": {
+    "publish": false
+  },
   "hooks": {
     "before:init": ["pnpm lint"]
   },
