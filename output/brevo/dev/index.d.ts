@@ -18,7 +18,18 @@ export interface SendTransactionalMail {
     };
     attachment?: Attachment[];
 }
+export interface SendTransactionalSMS {
+    sender: string;
+    recipient: string;
+    content: string;
+    type?: 'transactional' | 'marketing';
+    tag?: string;
+    webUrl?: string;
+    unicodeEnabled?: boolean;
+    organisationPrefix?: string;
+}
 export declare function SendTemplate(body: SendTransactionalMail): Promise<APIResponse>;
+export declare function SendSMS(body: SendTransactionalSMS): Promise<APIResponse>;
 export interface Contact {
     email?: string;
     id: number;

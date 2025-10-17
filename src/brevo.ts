@@ -2,6 +2,7 @@ import {
   APIResponse,
   AddContact,
   SendTransactionalMail,
+  SendTransactionalSMS,
   UpdateContact,
   AddContactList,
   Contact,
@@ -19,6 +20,18 @@ export function setConfig(newConfig: BrevoConfig) {
 
 export async function sendTransactionalMail(body: SendTransactionalMail): Promise<APIResponse> {
   const response = await axios.post('https://api.brevo.com/v3/smtp/email', body, {
+    headers: {
+      accept: 'application/json',
+      'content-type': 'application/json',
+      'api-key': config.apiKey,
+    },
+    validateStatus: () => true,
+  });
+  return { status: response.status, data: response.data };
+}
+
+export async function sendTransactionalSMS(body: SendTransactionalSMS): Promise<APIResponse> {
+  const response = await axios.post('https://api.brevo.com/v3/transactionalSMS/sms', body, {
     headers: {
       accept: 'application/json',
       'content-type': 'application/json',
