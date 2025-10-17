@@ -5,6 +5,7 @@ import { InterfaceFunction } from '@ajs/core/beta';
  */
 export namespace internal {
   export const sendTransactionalMailProxy = InterfaceFunction<(body: SendTransactionalMail) => Promise<APIResponse>>();
+  export const sendTransactionalSMSProxy = InterfaceFunction<(body: SendTransactionalSMS) => Promise<APIResponse>>();
   export const contactDetailsProxy = InterfaceFunction<(identifier: string) => Promise<APIResponse<Contact>>>();
   export const addContactProxy = InterfaceFunction<(body: AddContact) => Promise<APIResponse>>();
   export const updateContactProxy =
@@ -36,8 +37,23 @@ export interface SendTransactionalMail {
   attachment?: Attachment[];
 }
 
+export interface SendTransactionalSMS {
+  sender: string;
+  recipient: string;
+  content: string;
+  type?: 'transactional' | 'marketing';
+  tag?: string;
+  webUrl?: string;
+  unicodeEnabled?: boolean;
+  organisationPrefix?: string;
+}
+
 export function SendTemplate(body: SendTransactionalMail): Promise<APIResponse> {
   return internal.sendTransactionalMailProxy(body);
+}
+
+export function SendSMS(body: SendTransactionalSMS): Promise<APIResponse> {
+  return internal.sendTransactionalSMSProxy(body);
 }
 
 export interface Contact {
