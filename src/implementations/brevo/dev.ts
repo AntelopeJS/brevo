@@ -1,4 +1,10 @@
-import { AddContact, AddContactList, SendTransactionalMail, SendTransactionalSMS, UpdateContact } from '@ajs.local/brevo/dev';
+import {
+  AddContact,
+  AddContactList,
+  SendTransactionalMail,
+  SendTransactionalSMS,
+  UpdateContact,
+} from '@ajs.local/brevo/dev';
 import {
   addContact,
   addContactList,
