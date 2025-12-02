@@ -26,7 +26,7 @@
   "scripts": {
     "build": "tsc",
     "dev:prepare": "cd playground && ajs module imports install",
-    "dev": "set -a && source playground/.env && ajs project run -w -p playground",
+    "dev": "set -a && source .env && ajs project run -w -p playground",
     "format": "prettier --write .",
     "generate": "ajs module exports generate",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
@@ -34,7 +34,7 @@
     "prepack": "pnpm run build",
     "prepare": "ajs module imports install",
     "release": "pnpm run lint && pnpm run test && pnpm run prepack && release-it",
-    "test": "ajs module test ."
+    "test": "set -a && source .env && ajs module test ."
   },
   "antelopeJs": {
     "exportsPath": "dist/interfaces",
@@ -42,7 +42,11 @@
       "core@beta",
       "logging@beta"
     ],
-    "importsOptional": []
+    "importsOptional": [],
+    "test": {
+      "project": "src/test/antelope.test.json",
+      "folder": "dist/test"
+    }
   },
   "dependencies": {
     "axios": "^1.8.4"
@@ -51,7 +55,11 @@
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.25.0",
     "@release-it/conventional-changelog": "^10.0.1",
+    "@types/chai": "^5.2.2",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^22.15.18",
+    "@types/sinon": "^17.0.4",
+    "chai": "^5.2.0",
     "eslint": "^9.25.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-import": "^2.31.0",
@@ -59,6 +67,7 @@
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
     "release-it": "^19.0.2",
+    "sinon": "^20.0.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.30.1"
   }

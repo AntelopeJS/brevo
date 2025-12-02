@@ -2,9 +2,7 @@
   "name": "playground",
   "version": "0.0.1",
   "main": "dist/index.js",
-  "scripts": {
-    "dev": "set -a && source .env && ajs project run -w"
-  },
+  "scripts": {},
   "devDependencies": {
     "@types/node": "^20.5.7",
     "prettier": "^2.6.1",
