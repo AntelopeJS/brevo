@@ -1,4 +1,4 @@
-import { EventProxy, InterfaceFunction } from '@ajs/core/beta';
+import { InterfaceFunction } from '@ajs/core/beta';
 
 // =============================================================================
 // EMAIL ADDRESS TYPES
@@ -268,7 +268,6 @@ export interface ProviderCapabilities {
     scheduling: boolean;
     openTracking: boolean;
     clickTracking: boolean;
-    webhooks: boolean;
     inlineAttachments: boolean;
     tags: boolean;
     metadata: boolean;
@@ -332,84 +331,3 @@ export const SendTemplate = InterfaceFunction<(params: TemplateEmailParams) => P
  * ```
  */
 export const GetCapabilities = InterfaceFunction<() => Promise<ProviderCapabilities>>();
-
-// =============================================================================
-// EVENT TYPES
-// =============================================================================
-
-/** Base fields for all email events */
-export interface EmailEventBase {
-  /** Provider message ID */
-  messageId: string;
-  /** Recipient email address */
-  recipient: string;
-  /** When the event occurred */
-  timestamp: Date;
-  /** Provider name */
-  provider?: string;
-  /** Tags from the original email */
-  tags?: string[];
-  /** Metadata from the original email */
-  metadata?: Record<string, string>;
-}
-
-/** Fired when email is delivered to recipient's inbox */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface EmailDeliveredEvent extends EmailEventBase {}
-
-/** Fired when email bounces */
-export interface EmailBouncedEvent extends EmailEventBase {
-  /** hard = address doesn't exist, soft = temporary issue */
-  bounceType: 'hard' | 'soft' | 'undetermined';
-  /** Bounce code from receiving server */
-  bounceCode?: string;
-  /** Bounce message */
-  bounceMessage?: string;
-}
-
-/** Fired when recipient opens the email */
-export interface EmailOpenedEvent extends EmailEventBase {
-  userAgent?: string;
-  ipAddress?: string;
-}
-
-/** Fired when recipient clicks a link */
-export interface EmailClickedEvent extends EmailEventBase {
-  /** URL that was clicked */
-  url: string;
-  userAgent?: string;
-  ipAddress?: string;
-}
-
-/** Fired when recipient marks email as spam */
-export interface EmailComplaintEvent extends EmailEventBase {
-  complaintType?: string;
-}
-
-/** Fired when recipient unsubscribes */
-export interface EmailUnsubscribedEvent extends EmailEventBase {
-  /** Mailing list identifier */
-  list?: string;
-}
-
-// =============================================================================
-// EVENTS
-// =============================================================================
-
-/** Fired when email is delivered */
-export const OnDelivered = new EventProxy<(event: EmailDeliveredEvent) => void>();
-
-/** Fired when email bounces */
-export const OnBounced = new EventProxy<(event: EmailBouncedEvent) => void>();
-
-/** Fired when email is opened (requires tracking) */
-export const OnOpened = new EventProxy<(event: EmailOpenedEvent) => void>();
-
-/** Fired when a link is clicked (requires tracking) */
-export const OnClicked = new EventProxy<(event: EmailClickedEvent) => void>();
-
-/** Fired when email is marked as spam */
-export const OnComplaint = new EventProxy<(event: EmailComplaintEvent) => void>();
-
-/** Fired when recipient unsubscribes */
-export const OnUnsubscribed = new EventProxy<(event: EmailUnsubscribedEvent) => void>();

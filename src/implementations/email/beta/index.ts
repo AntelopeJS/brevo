@@ -385,7 +385,6 @@ export function GetCapabilities(): Promise<ProviderCapabilities> {
       scheduling: true,
       openTracking: true,
       clickTracking: true,
-      webhooks: false, // Webhooks not implemented yet
       inlineAttachments: true,
       tags: true,
       metadata: false,
@@ -393,56 +392,3 @@ export function GetCapabilities(): Promise<ProviderCapabilities> {
     },
   });
 }
-
-// =============================================================================
-// EVENTS (NOT IMPLEMENTED YET)
-// =============================================================================
-
-import {
-  OnDelivered,
-  OnBounced,
-  OnOpened,
-  OnClicked,
-  OnComplaint,
-  OnUnsubscribed,
-} from '../../../interfaces/email/beta';
-
-const EVENT_NOT_IMPLEMENTED_MSG =
-  '[brevo/email] Email events are not implemented yet. Webhook support is required to receive email events.';
-
-// Override register methods to warn users that events are not implemented
-const originalOnDeliveredRegister = OnDelivered.register.bind(OnDelivered);
-OnDelivered.register = (func) => {
-  Logging.Warn(EVENT_NOT_IMPLEMENTED_MSG);
-  originalOnDeliveredRegister(func);
-};
-
-const originalOnBouncedRegister = OnBounced.register.bind(OnBounced);
-OnBounced.register = (func) => {
-  Logging.Warn(EVENT_NOT_IMPLEMENTED_MSG);
-  originalOnBouncedRegister(func);
-};
-
-const originalOnOpenedRegister = OnOpened.register.bind(OnOpened);
-OnOpened.register = (func) => {
-  Logging.Warn(EVENT_NOT_IMPLEMENTED_MSG);
-  originalOnOpenedRegister(func);
-};
-
-const originalOnClickedRegister = OnClicked.register.bind(OnClicked);
-OnClicked.register = (func) => {
-  Logging.Warn(EVENT_NOT_IMPLEMENTED_MSG);
-  originalOnClickedRegister(func);
-};
-
-const originalOnComplaintRegister = OnComplaint.register.bind(OnComplaint);
-OnComplaint.register = (func) => {
-  Logging.Warn(EVENT_NOT_IMPLEMENTED_MSG);
-  originalOnComplaintRegister(func);
-};
-
-const originalOnUnsubscribedRegister = OnUnsubscribed.register.bind(OnUnsubscribed);
-OnUnsubscribed.register = (func) => {
-  Logging.Warn(EVENT_NOT_IMPLEMENTED_MSG);
-  originalOnUnsubscribedRegister(func);
-};

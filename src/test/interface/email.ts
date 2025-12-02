@@ -41,11 +41,6 @@ describe('Email Interface', () => {
       assert.equal(caps.features.clickTracking, true);
     });
 
-    it('should have webhooks feature disabled (not implemented yet)', async () => {
-      const caps = await GetCapabilities();
-      assert.equal(caps.features.webhooks, false);
-    });
-
     it('should have inlineAttachments feature enabled', async () => {
       const caps = await GetCapabilities();
       assert.equal(caps.features.inlineAttachments, true);
