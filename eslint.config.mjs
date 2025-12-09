@@ -18,6 +18,7 @@ export default tseslint.config(
       '**/*.min.js',
       'pnpm-lock.yaml',
       'eslint.config.mjs',
+      'CHANGELOG.md'
     ],
   },
   eslint.configs.recommended,
