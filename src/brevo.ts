@@ -7,115 +7,130 @@ import {
   AddContactList,
   Contact,
 } from '@ajs.local/brevo/dev';
+export { APIResponse } from '@ajs.local/brevo/dev';
 import axios from 'axios';
+
+// =============================================================================
+// CONFIGURATION
+// =============================================================================
 
 export interface BrevoConfig {
   apiKey: string;
+  defaultSender?: { email: string; name?: string };
 }
 
+const BASE_URL = 'https://api.brevo.com/v3';
+const TIMEOUT = 30000;
+
 let config: BrevoConfig;
+
 export function setConfig(newConfig: BrevoConfig) {
   config = newConfig;
 }
 
-export async function sendTransactionalMail(body: SendTransactionalMail): Promise<APIResponse> {
-  const response = await axios.post('https://api.brevo.com/v3/smtp/email', body, {
+export function getDefaultSender() {
+  return config.defaultSender;
+}
+
+// =============================================================================
+// HTTP CLIENT
+// =============================================================================
+
+async function request<T>(
+  method: 'get' | 'post' | 'put' | 'delete',
+  path: string,
+  data?: unknown,
+): Promise<APIResponse<T>> {
+  const response = await axios({
+    method,
+    url: `${BASE_URL}${path}`,
+    data,
     headers: {
       accept: 'application/json',
       'content-type': 'application/json',
       'api-key': config.apiKey,
     },
+    timeout: TIMEOUT,
     validateStatus: () => true,
   });
   return { status: response.status, data: response.data };
 }
 
-export async function sendTransactionalSMS(body: SendTransactionalSMS): Promise<APIResponse> {
-  const response = await axios.post('https://api.brevo.com/v3/transactionalSMS/sms', body, {
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      'api-key': config.apiKey,
-    },
-    validateStatus: () => true,
-  });
-  return { status: response.status, data: response.data };
+// =============================================================================
+// TYPES
+// =============================================================================
+
+export interface SendEmailBody {
+  sender?: { email: string; name?: string };
+  to: { email: string; name?: string }[];
+  cc?: { email: string; name?: string }[];
+  bcc?: { email: string; name?: string }[];
+  replyTo?: { email: string; name?: string };
+  subject: string;
+  htmlContent?: string;
+  textContent?: string;
+  attachment?: { name: string; content?: string; url?: string }[];
+  tags?: string[];
+  scheduledAt?: string;
+  templateId?: number;
+  params?: Record<string, unknown>;
 }
 
-export async function contactDetails(identifier: string): Promise<APIResponse<Contact>> {
-  const encodedIdentifier = encodeURIComponent(identifier);
-
-  const response = await axios.get(`https://api.brevo.com/v3/contacts/${encodedIdentifier}`, {
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      'api-key': config.apiKey,
-    },
-    validateStatus: () => true,
-  });
-  return { status: response.status, data: response.data };
+export interface MessageVersion {
+  to: { email: string; name?: string }[];
+  cc?: { email: string; name?: string }[];
+  bcc?: { email: string; name?: string }[];
+  replyTo?: { email: string; name?: string };
+  subject?: string;
+  htmlContent?: string;
+  textContent?: string;
+  attachment?: { name: string; content?: string; url?: string }[];
+  params?: Record<string, unknown>;
 }
 
-export async function addContact(body: AddContact): Promise<APIResponse> {
-  const response = await axios.post('https://api.brevo.com/v3/contacts', body, {
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      'api-key': config.apiKey,
-    },
-    validateStatus: () => true,
-  });
-  return { status: response.status, data: response.data };
+export interface SendBatchEmailBody {
+  sender?: { email: string; name?: string };
+  subject?: string;
+  htmlContent?: string;
+  textContent?: string;
+  templateId?: number;
+  params?: Record<string, unknown>;
+  tags?: string[];
+  scheduledAt?: string;
+  messageVersions: MessageVersion[];
 }
 
-export async function updateContact(identifier: string, body: UpdateContact): Promise<APIResponse> {
-  const encodedIdentifier = encodeURIComponent(identifier);
-
-  const response = await axios.put(`https://api.brevo.com/v3/contacts/${encodedIdentifier}`, body, {
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      'api-key': config.apiKey,
-    },
-    validateStatus: () => true,
-  });
-  return { status: response.status, data: response.data };
+export interface BatchEmailResponse {
+  messageIds?: string[];
+  messageId?: string;
+  code?: string;
+  message?: string;
 }
 
-export async function deleteContact(identifier: string): Promise<APIResponse> {
-  const encodedIdentifier = encodeURIComponent(identifier);
+// =============================================================================
+// API FUNCTIONS
+// =============================================================================
 
-  const response = await axios.delete(`https://api.brevo.com/v3/contacts/${encodedIdentifier}`, {
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      'api-key': config.apiKey,
-    },
-    validateStatus: () => true,
-  });
-  return { status: response.status, data: response.data };
-}
+export const sendEmail = (body: SendEmailBody) => request<void>('post', '/smtp/email', body);
 
-export async function addContactList(body: AddContactList): Promise<APIResponse> {
-  const response = await axios.post(`https://api.brevo.com/v3/contacts/lists`, body, {
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      'api-key': config.apiKey,
-    },
-    validateStatus: () => true,
-  });
-  return { status: response.status, data: response.data };
-}
+export const sendBatchEmail = (body: SendBatchEmailBody) => request<BatchEmailResponse>('post', '/smtp/email', body);
 
-export async function deleteContactList(listId: number): Promise<APIResponse> {
-  const response = await axios.delete(`https://api.brevo.com/v3/contacts/lists/${listId}`, {
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      'api-key': config.apiKey,
-    },
-    validateStatus: () => true,
-  });
-  return { status: response.status, data: response.data };
-}
+export const sendTransactionalMail = (body: SendTransactionalMail) => request<void>('post', '/smtp/email', body);
+
+export const sendTransactionalSMS = (body: SendTransactionalSMS) =>
+  request<void>('post', '/transactionalSMS/sms', body);
+
+export const contactDetails = (identifier: string) =>
+  request<Contact>('get', `/contacts/${encodeURIComponent(identifier)}`);
+
+export const addContact = (body: AddContact) => request<void>('post', '/contacts', body);
+
+export const updateContact = (identifier: string, body: UpdateContact) =>
+  request<void>('put', `/contacts/${encodeURIComponent(identifier)}`, body);
+
+export const deleteContact = (identifier: string) =>
+  request<void>('delete', `/contacts/${encodeURIComponent(identifier)}`);
+
+export const addContactList = (body: AddContactList) => request<void>('post', '/contacts/lists', body);
+
+export const deleteContactList = (listId: number) => request<void>('delete', `/contacts/lists/${listId}`);

@@ -2,9 +2,7 @@
   "name": "playground",
   "version": "0.0.1",
   "main": "dist/index.js",
-  "scripts": {
-    "dev": "ajs project run -w"
-  },
+  "scripts": {},
   "devDependencies": {
     "@types/node": "^20.5.7",
     "prettier": "^2.6.1",
@@ -17,8 +15,11 @@
         "skipInstall": true
       },
       {
-        "name": "brevo@dev",
-        "git": "git@github.com:AntelopeJS/interfaces-private.git",
+        "name": "logging@beta",
+        "skipInstall": true
+      },
+      {
+        "name": "email@beta",
         "skipInstall": true
       }
     ],
