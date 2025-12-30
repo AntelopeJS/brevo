@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.1.0](https://github.com/AntelopeJS/brevo/compare/v0.0.1...v0.1.0) (2025-12-30)
+
+### Features
+
+* brevo transactionnal sms implementation ([#3](https://github.com/AntelopeJS/brevo/issues/3)) ([048c74f](https://github.com/AntelopeJS/brevo/commit/048c74f5278d015ba7410586be6eb83c4f3bbdfb))
+* email interface ([#4](https://github.com/AntelopeJS/brevo/issues/4)) ([9003de0](https://github.com/AntelopeJS/brevo/commit/9003de0efb2ffab18052fe8fa8f99c4df2f5ef95))
+
+### Bug Fixes
+
+* dotenv ([23d0952](https://github.com/AntelopeJS/brevo/commit/23d0952d267f83fe04e107cd7323336350bbb797))
+
 ## 0.0.1 (2025-05-30)
 
 ### Features

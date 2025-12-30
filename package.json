@@ -1,6 +1,6 @@
 {
   "name": "@antelopejs/brevo",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A flexible email module that implements the brevo interface of antelopejs",
   "repository": {
     "type": "git",
