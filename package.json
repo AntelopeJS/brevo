@@ -26,7 +26,7 @@
   "scripts": {
     "build": "tsc",
     "dev:prepare": "cd playground && ajs module imports install",
-    "dev": "set -a && source .env && ajs project run -w -p playground",
+    "dev": "dotenv -- ajs project run -w -p playground",
     "format": "prettier --write .",
     "generate": "ajs module exports generate",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
@@ -34,7 +34,7 @@
     "prepack": "pnpm run build",
     "prepare": "ajs module imports install",
     "release": "pnpm run lint && pnpm run test && pnpm run prepack && release-it",
-    "test": "npx tsc && set -a && source .env && ajs module test ."
+    "test": "npx tsc && dotenv -- ajs module test ."
   },
   "antelopeJs": {
     "exportsPath": "dist/interfaces",
@@ -60,6 +60,7 @@
     "@types/node": "^22.15.18",
     "@types/sinon": "^17.0.4",
     "chai": "^5.2.0",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.25.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-import": "^2.31.0",
