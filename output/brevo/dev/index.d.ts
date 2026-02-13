@@ -1,4 +1,4 @@
-export interface APIResponse<T = any> {
+export interface APIResponse<T = unknown> {
     status: number;
     data: T;
 }
@@ -10,12 +10,11 @@ export interface Attachment {
     url?: string;
     content?: string;
 }
+export type TransactionalMailParams = Record<string, string | undefined>;
 export interface SendTransactionalMail {
     to: Recipient[];
     templateId: number;
-    params?: {
-        [k: string]: string | undefined;
-    };
+    params?: TransactionalMailParams;
     attachment?: Attachment[];
 }
 export interface SendTransactionalSMS {
@@ -30,6 +29,38 @@ export interface SendTransactionalSMS {
 }
 export declare function SendTemplate(body: SendTransactionalMail): Promise<APIResponse>;
 export declare function SendSMS(body: SendTransactionalSMS): Promise<APIResponse>;
+export type ContactAttributes = Record<string, unknown>;
+export type ContactUnsubscriptions = Record<string, unknown>;
+export type ContactTransactionalAttributes = Record<string, unknown>[];
+export interface ContactEvent {
+    campaignId: number;
+    eventTime: string;
+}
+export interface ContactOpenedEvent extends ContactEvent {
+    count: number;
+    ip: string;
+}
+export interface ContactClickedLink {
+    count: number;
+    eventTime: string;
+    ip: string;
+    url: string;
+}
+export interface ContactClickedEvent {
+    campaignId: number;
+    links: ContactClickedLink[];
+}
+export interface ContactStatistics {
+    messagesSent: ContactEvent[];
+    hardBounces: ContactEvent[];
+    softBounces: ContactEvent[];
+    complaints: ContactEvent[];
+    unsubscriptions: ContactUnsubscriptions;
+    opened?: ContactOpenedEvent[];
+    clicked?: ContactClickedEvent[];
+    transacAttributes: ContactTransactionalAttributes;
+    delivered: ContactEvent[];
+}
 export interface Contact {
     email?: string;
     id: number;
@@ -39,53 +70,14 @@ export interface Contact {
     modifiedAt: string;
     listIds: number[];
     listUnsubscribed?: number[];
-    attributes: any;
-    statistics: {
-        messagesSent: {
-            campaignId: number;
-            eventTime: string;
-        }[];
-        hardBounces: {
-            campaignId: number;
-            eventTime: string;
-        }[];
-        softBounces: {
-            campaignId: number;
-            eventTime: string;
-        }[];
-        complaints: {
-            campaignId: number;
-            eventTime: string;
-        }[];
-        unsubscriptions: any;
-        opened?: {
-            campaignId: number;
-            count: number;
-            eventTime: string;
-            ip: string;
-        }[];
-        clicked?: {
-            campaignId: number;
-            links: {
-                count: number;
-                eventTime: string;
-                ip: string;
-                url: string;
-            }[];
-        }[];
-        transacAttributes: any[];
-        delivered: {
-            campaignId: number;
-            eventTime: string;
-        }[];
-    };
+    attributes: ContactAttributes;
+    statistics: ContactStatistics;
 }
+export type ContactMutationAttributes = Record<string, string | undefined>;
 export interface AddContact {
     email?: string;
     ext_id?: string;
-    attributes?: {
-        [k: string]: string | undefined;
-    };
+    attributes?: ContactMutationAttributes;
     emailBlacklisted?: boolean;
     smsBlacklisted?: boolean;
     listIds?: number[];
@@ -93,9 +85,7 @@ export interface AddContact {
     smtpBlacklistSender?: string[];
 }
 export interface UpdateContact {
-    attributes?: {
-        [k: string]: string | undefined;
-    };
+    attributes?: ContactMutationAttributes;
     ext_id?: string;
     emailBlacklisted?: boolean;
     smsBlacklisted?: boolean;
