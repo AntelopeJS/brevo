@@ -7,6 +7,7 @@ import axios from 'axios';
 export interface EmailClientConfig {
   apiKey: string;
   defaultSender?: { email: string; name?: string };
+  emailWhitelist?: string[];
 }
 
 const BASE_URL = 'https://api.brevo.com/v3';
@@ -20,6 +21,10 @@ export function setConfig(newConfig: EmailClientConfig) {
 
 export function getDefaultSender() {
   return config.defaultSender;
+}
+
+export function getEmailWhitelist() {
+  return config.emailWhitelist;
 }
 
 // =============================================================================

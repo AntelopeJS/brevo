@@ -16,6 +16,7 @@ import {
   sendEmail,
   sendBatchEmail,
   getDefaultSender,
+  getEmailWhitelist,
   type BrevoAddress,
   type BrevoAttachment,
   type BrevoEmailBody,
@@ -90,6 +91,58 @@ function formatSingleAddress(addr: EmailAddress | EmailAddress[] | undefined): B
 function getFirstRecipient(to: EmailAddress | EmailAddress[]): string {
   const first = Array.isArray(to) ? to[0] : to;
   return typeof first === 'string' ? first : first.email;
+}
+
+// =============================================================================
+// WHITELIST HELPERS
+// =============================================================================
+
+interface WhitelistResult {
+  to: EmailAddress[];
+  cc: EmailAddress[] | undefined;
+  bcc: EmailAddress[] | undefined;
+  isEmpty: boolean;
+}
+
+function extractEmail(addr: EmailAddress): string {
+  return typeof addr === 'string' ? addr : addr.email;
+}
+
+function filterWhitelistedAddresses(
+  addrs: EmailAddress | EmailAddress[] | undefined,
+  patterns: RegExp[],
+): EmailAddress[] | undefined {
+  if (!addrs) return undefined;
+  const list = Array.isArray(addrs) ? addrs : [addrs];
+  const filtered = list.filter((addr) => {
+    const email = extractEmail(addr);
+    const isAllowed = patterns.some((p) => p.test(email));
+    if (!isAllowed) {
+      Logging.Warn(`[brevo/email] Recipient "${email}" filtered by whitelist`);
+    }
+    return isAllowed;
+  });
+  return filtered.length > 0 ? filtered : undefined;
+}
+
+function applyWhitelist(params: EmailParams): WhitelistResult {
+  const whitelist = getEmailWhitelist();
+  if (!whitelist?.length) {
+    const toList = Array.isArray(params.to) ? params.to : [params.to];
+    return {
+      to: toList,
+      cc: params.cc as EmailAddress[] | undefined,
+      bcc: params.bcc as EmailAddress[] | undefined,
+      isEmpty: false,
+    };
+  }
+
+  const patterns = whitelist.map((w) => new RegExp(w));
+  const to = filterWhitelistedAddresses(params.to, patterns) || [];
+  const cc = filterWhitelistedAddresses(params.cc, patterns);
+  const bcc = filterWhitelistedAddresses(params.bcc, patterns);
+
+  return { to, cc, bcc, isEmpty: to.length === 0 };
 }
 
 // =============================================================================
@@ -204,7 +257,14 @@ export async function Send(params: EmailParams): Promise<EmailResponse> {
       return errorResponse('MISSING_SENDER', 'No sender address provided and no default sender configured', false);
     }
 
-    const response = await sendEmail(buildEmailBody(params, sender));
+    const filtered = applyWhitelist(params);
+    if (filtered.isEmpty) {
+      Logging.Warn('[brevo/email] All recipients filtered by whitelist, skipping send');
+      return successResponse();
+    }
+
+    const filteredParams: EmailParams = { ...params, to: filtered.to, cc: filtered.cc, bcc: filtered.bcc };
+    const response = await sendEmail(buildEmailBody(filteredParams, sender));
     return mapApiResponse(response);
   } catch (err) {
     return errorResponse('SEND_FAILED', (err as Error).message, true);
@@ -240,21 +300,44 @@ export async function SendBatch(params: BatchEmailParams): Promise<BatchEmailRes
     return { success: false, total: params.messages.length, successful: 0, failed, responses };
   }
 
-  // Split into chunks
-  const chunks: (typeof params.messages)[] = [];
-  for (let i = 0; i < params.messages.length; i += BATCH_CHUNK_SIZE) {
-    chunks.push(params.messages.slice(i, i + BATCH_CHUNK_SIZE));
+  // Apply whitelist and collect messages that still have recipients
+  const filteredMessages: { original: (typeof params.messages)[number]; merged: EmailParams; index: number }[] = [];
+
+  for (let i = 0; i < params.messages.length; i++) {
+    const message = params.messages[i];
+    const mergedParams: EmailParams = { ...params.defaults, ...message };
+    const filtered = applyWhitelist(mergedParams);
+
+    if (filtered.isEmpty) {
+      Logging.Warn('[brevo/email] All recipients filtered by whitelist, skipping batch message');
+      responses.push(batchItemResponse(successResponse(), message.batchId, i, getFirstRecipient(mergedParams.to)));
+      successful++;
+      continue;
+    }
+
+    filteredMessages.push({
+      original: message,
+      merged: { ...mergedParams, to: filtered.to, cc: filtered.cc, bcc: filtered.bcc },
+      index: i,
+    });
   }
 
-  let globalIndex = 0;
+  if (filteredMessages.length === 0) {
+    return { success: true, total: params.messages.length, successful, failed, responses };
+  }
+
+  // Split into chunks
+  const chunks: (typeof filteredMessages)[] = [];
+  for (let i = 0; i < filteredMessages.length; i += BATCH_CHUNK_SIZE) {
+    chunks.push(filteredMessages.slice(i, i + BATCH_CHUNK_SIZE));
+  }
 
   for (const chunk of chunks) {
-    const messageVersions = chunk.map((message) => buildMessageVersion({ ...params.defaults, ...message }));
+    const messageVersions = chunk.map((entry) => buildMessageVersion(entry.merged));
 
-    // Brevo requires root-level subject and content, fallback to first message's values
-    const batchSubject = params.defaults?.subject || chunk[0]?.subject;
-    const batchHtml = params.defaults?.html || chunk[0]?.html;
-    const batchText = params.defaults?.text || chunk[0]?.text;
+    const batchSubject = params.defaults?.subject || chunk[0]?.merged.subject;
+    const batchHtml = params.defaults?.html || chunk[0]?.merged.html;
+    const batchText = params.defaults?.text || chunk[0]?.merged.text;
 
     const batchBody: BrevoBatchBody = {
       sender,
@@ -272,50 +355,43 @@ export async function SendBatch(params: BatchEmailParams): Promise<BatchEmailRes
       if (response.status >= 200 && response.status < 300) {
         const messageIds = response.data?.messageIds || [];
         for (let i = 0; i < chunk.length; i++) {
-          const message = chunk[i];
-          const mergedParams: EmailParams = { ...params.defaults, ...message };
+          const entry = chunk[i];
           responses.push(
             batchItemResponse(
               successResponse(messageIds[i]),
-              message.batchId,
-              globalIndex + i,
-              getFirstRecipient(mergedParams.to),
+              entry.original.batchId,
+              entry.index,
+              getFirstRecipient(entry.merged.to),
             ),
           );
           successful++;
         }
       } else {
-        // Chunk failed
         const baseError = errorResponse(
           response.data?.code || 'API_ERROR',
           response.data?.message || `HTTP ${response.status}`,
           response.status >= 500,
         );
         for (let i = 0; i < chunk.length; i++) {
-          const message = chunk[i];
-          const mergedParams: EmailParams = { ...params.defaults, ...message };
+          const entry = chunk[i];
           responses.push(
-            batchItemResponse(baseError, message.batchId, globalIndex + i, getFirstRecipient(mergedParams.to)),
+            batchItemResponse(baseError, entry.original.batchId, entry.index, getFirstRecipient(entry.merged.to)),
           );
           failed++;
         }
         if (!continueOnError) break;
       }
     } catch (err) {
-      // Exception - chunk failed
       const baseError = errorResponse('BATCH_SEND_FAILED', (err as Error).message, true);
       for (let i = 0; i < chunk.length; i++) {
-        const message = chunk[i];
-        const mergedParams: EmailParams = { ...params.defaults, ...message };
+        const entry = chunk[i];
         responses.push(
-          batchItemResponse(baseError, message.batchId, globalIndex + i, getFirstRecipient(mergedParams.to)),
+          batchItemResponse(baseError, entry.original.batchId, entry.index, getFirstRecipient(entry.merged.to)),
         );
         failed++;
       }
       if (!continueOnError) break;
     }
-
-    globalIndex += chunk.length;
   }
 
   return { success: failed === 0, total: params.messages.length, successful, failed, responses };
@@ -355,14 +431,20 @@ export async function SendTemplate(params: TemplateEmailParams): Promise<EmailRe
       );
     }
 
+    const filtered = applyWhitelist(params as EmailParams);
+    if (filtered.isEmpty) {
+      Logging.Warn('[brevo/email] All recipients filtered by whitelist, skipping template send');
+      return successResponse();
+    }
+
     const body: BrevoEmailBody = {
       sender,
-      to: formatAddresses(params.to) || [],
+      to: formatAddresses(filtered.to) || [],
       subject: params.subject ?? '',
       templateId,
       params: params.variables as Record<string, unknown>,
-      ...(params.cc && { cc: formatAddresses(params.cc) }),
-      ...(params.bcc && { bcc: formatAddresses(params.bcc) }),
+      ...(filtered.cc && { cc: formatAddresses(filtered.cc) }),
+      ...(filtered.bcc && { bcc: formatAddresses(filtered.bcc) }),
       ...(params.replyTo && { replyTo: formatSingleAddress(params.replyTo) }),
       ...(params.attachments && { attachment: mapAttachments(params.attachments) }),
       ...(params.tags && { tags: params.tags }),

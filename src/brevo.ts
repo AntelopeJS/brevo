@@ -17,6 +17,7 @@ import axios from 'axios';
 export interface BrevoConfig {
   apiKey: string;
   defaultSender?: { email: string; name?: string };
+  emailWhitelist?: string[];
 }
 
 const BASE_URL = 'https://api.brevo.com/v3';
