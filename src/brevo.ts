@@ -114,7 +114,8 @@ export interface BatchEmailResponse {
   message?: string;
 }
 
-export const sendEmail = (body: SendEmailBody): Promise<APIResponse<void>> => request<void>('post', '/smtp/email', body);
+export const sendEmail = (body: SendEmailBody): Promise<APIResponse<void>> =>
+  request<void>('post', '/smtp/email', body);
 
 export const sendBatchEmail = (body: SendBatchEmailBody): Promise<APIResponse<BatchEmailResponse>> =>
   request<BatchEmailResponse>('post', '/smtp/email', body);

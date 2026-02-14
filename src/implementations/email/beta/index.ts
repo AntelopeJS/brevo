@@ -286,11 +286,23 @@ function stringifyTemplateValue(value: unknown): string {
     return '';
   }
 
-  if (typeof value === 'object') {
-    return JSON.stringify(value);
+  if (typeof value === 'string') {
+    return value;
   }
 
-  return String(value);
+  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+    return String(value);
+  }
+
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+
+  if (Array.isArray(value) || typeof value === 'object') {
+    return JSON.stringify(value) ?? '';
+  }
+
+  return '';
 }
 
 function renderTemplate(template: InlineTemplate, variables: Record<string, unknown>): string {
@@ -402,7 +414,9 @@ function createInitialBatchState(params: BatchEmailParams): BatchState {
 
     if (filtered.isEmpty) {
       Logging.Warn('[brevo/email] All recipients filtered by whitelist, skipping batch message');
-      state.responses.push(createBatchItemResponse(createSuccessResponse(), message.batchId, index, getFirstRecipient(merged.to)));
+      state.responses.push(
+        createBatchItemResponse(createSuccessResponse(), message.batchId, index, getFirstRecipient(merged.to)),
+      );
       state.successful += 1;
       return;
     }
@@ -450,7 +464,12 @@ function buildBatchBody(chunk: BatchPreparedMessage[], scope: BatchScope): Brevo
 
 function buildChunkSuccessProgress(chunk: BatchPreparedMessage[], messageIds: string[]): BatchProgress {
   const responses = chunk.map((entry, index) =>
-    createBatchItemResponse(createSuccessResponse(messageIds[index]), entry.batchId, entry.index, getFirstRecipient(entry.params.to)),
+    createBatchItemResponse(
+      createSuccessResponse(messageIds[index]),
+      entry.batchId,
+      entry.index,
+      getFirstRecipient(entry.params.to),
+    ),
   );
 
   return {
@@ -511,7 +530,11 @@ function createBatchResponse(total: number, progress: BatchProgress): BatchEmail
   };
 }
 
-function buildInlineTemplateEmailParams(params: TemplateEmailParams, renderedContent: string): EmailParams {
+function buildInlineTemplateEmailParams(
+  params: TemplateEmailParams,
+  template: InlineTemplate,
+  renderedContent: string,
+): EmailParams {
   const emailParams: EmailParams = {
     to: params.to,
     subject: params.subject ?? '',
@@ -527,7 +550,7 @@ function buildInlineTemplateEmailParams(params: TemplateEmailParams, renderedCon
     providerOptions: params.providerOptions,
   };
 
-  if (params.template.type === 'html') {
+  if (template.type === 'html') {
     emailParams.html = renderedContent;
   } else {
     emailParams.text = renderedContent;
@@ -577,7 +600,7 @@ async function sendInlineTemplate(params: TemplateEmailParams): Promise<EmailRes
   }
 
   const rendered = renderTemplate(params.template, params.variables ?? {});
-  return Send(buildInlineTemplateEmailParams(params, rendered));
+  return Send(buildInlineTemplateEmailParams(params, params.template, rendered));
 }
 
 async function sendProviderTemplate(params: TemplateEmailParams): Promise<EmailResponse> {
@@ -592,7 +615,11 @@ async function sendProviderTemplate(params: TemplateEmailParams): Promise<EmailR
 
   const templateId = parseTemplateId(params.template.id);
   if (templateId === null) {
-    return createErrorResponse('INVALID_TEMPLATE_ID', `Template ID must be a valid number, got: ${params.template.id}`, false);
+    return createErrorResponse(
+      'INVALID_TEMPLATE_ID',
+      `Template ID must be a valid number, got: ${params.template.id}`,
+      false,
+    );
   }
 
   const filtered = applyWhitelist(params);
