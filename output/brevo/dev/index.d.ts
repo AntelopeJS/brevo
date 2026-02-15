@@ -1,13 +1,3 @@
-export declare namespace internal {
-    const sendTransactionalMailProxy: (body: SendTransactionalMail) => Promise<APIResponse<unknown>>;
-    const sendTransactionalSMSProxy: (body: SendTransactionalSMS) => Promise<APIResponse<unknown>>;
-    const contactDetailsProxy: (identifier: string) => Promise<APIResponse<Contact>>;
-    const addContactProxy: (body: AddContact) => Promise<APIResponse<unknown>>;
-    const updateContactProxy: (identifier: string, body: UpdateContact) => Promise<APIResponse<unknown>>;
-    const deleteContactProxy: (identifier: string) => Promise<APIResponse<unknown>>;
-    const addContactListProxy: (body: AddContactList) => Promise<APIResponse<unknown>>;
-    const deleteContactListProxy: (identifier: number) => Promise<APIResponse<unknown>>;
-}
 export interface APIResponse<T = unknown> {
     status: number;
     data: T;

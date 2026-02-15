@@ -1,5 +1,8 @@
 import { InterfaceFunction } from '@ajs/core/beta';
 
+/**
+ * @internal
+ */
 export namespace internal {
   export const sendTransactionalMailProxy = InterfaceFunction<(body: SendTransactionalMail) => Promise<APIResponse>>();
   export const sendTransactionalSMSProxy = InterfaceFunction<(body: SendTransactionalSMS) => Promise<APIResponse>>();
