@@ -6,13 +6,6 @@ on:
       - main
       - feat/*
       - fix/*
-      - chore/*
-      - refactor/*
-      - test/*
-      - ci/*
-      - build/*
-      - perf/*
-      - docs/*
   pull_request:
     branches:
       - main
@@ -31,16 +24,13 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Enable corepack
-        run: corepack enable
-
-      - name: Install AntelopeJS CLI
+      - name: Enable corepack and install AntelopeJS CLI
         run: |
-          pnpm add --global @antelopejs/core
-          echo "$(pnpm bin --global)" >> "$GITHUB_PATH"
+          npm i -g --force corepack && corepack enable
+          npm i -g @antelopejs/core
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
       - name: Build project
         run: pnpm run build
