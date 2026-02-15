@@ -1,65 +1,5 @@
 import axios from 'axios';
 
-// =============================================================================
-// CONFIGURATION
-// =============================================================================
-
-export interface EmailClientConfig {
-  apiKey: string;
-  defaultSender?: { email: string; name?: string };
-  emailWhitelist?: string[];
-}
-
-const BASE_URL = 'https://api.brevo.com/v3';
-const TIMEOUT = 30000;
-
-let config: EmailClientConfig;
-
-export function setConfig(newConfig: EmailClientConfig) {
-  config = newConfig;
-}
-
-export function getDefaultSender() {
-  return config.defaultSender;
-}
-
-export function getEmailWhitelist() {
-  return config.emailWhitelist;
-}
-
-// =============================================================================
-// HTTP CLIENT
-// =============================================================================
-
-export interface ApiResponse<T = unknown> {
-  status: number;
-  data: T;
-}
-
-async function request<T>(
-  method: 'get' | 'post' | 'put' | 'delete',
-  path: string,
-  data?: unknown,
-): Promise<ApiResponse<T>> {
-  const response = await axios({
-    method,
-    url: `${BASE_URL}${path}`,
-    data,
-    headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      'api-key': config.apiKey,
-    },
-    timeout: TIMEOUT,
-    validateStatus: () => true,
-  });
-  return { status: response.status, data: response.data };
-}
-
-// =============================================================================
-// BREVO API TYPES
-// =============================================================================
-
 export interface BrevoAddress {
   email: string;
   name?: string;
@@ -69,6 +9,17 @@ export interface BrevoAttachment {
   name: string;
   content?: string;
   url?: string;
+}
+
+export interface EmailClientConfig {
+  apiKey: string;
+  defaultSender?: BrevoAddress;
+  emailWhitelist?: string[];
+}
+
+export interface ApiResponse<T = unknown> {
+  status: number;
+  data: T;
 }
 
 export interface BrevoEmailBody {
@@ -124,10 +75,52 @@ export interface BrevoBatchResponse {
   message?: string;
 }
 
-// =============================================================================
-// API FUNCTIONS
-// =============================================================================
+const BASE_URL = 'https://api.brevo.com/v3';
+const TIMEOUT = 30000;
 
-export const sendEmail = (body: BrevoEmailBody) => request<BrevoEmailResponse>('post', '/smtp/email', body);
+type HttpMethod = 'get' | 'post' | 'put' | 'delete';
 
-export const sendBatchEmail = (body: BrevoBatchBody) => request<BrevoBatchResponse>('post', '/smtp/email', body);
+let config: EmailClientConfig | undefined;
+
+function getConfig(): EmailClientConfig {
+  if (!config) {
+    throw new Error('Email client config not initialized');
+  }
+  return config;
+}
+
+export function setConfig(newConfig: EmailClientConfig): void {
+  config = newConfig;
+}
+
+export function getDefaultSender(): BrevoAddress | undefined {
+  return getConfig().defaultSender;
+}
+
+export function getEmailWhitelist(): string[] | undefined {
+  return getConfig().emailWhitelist;
+}
+
+async function request<T>(method: HttpMethod, path: string, data?: unknown): Promise<ApiResponse<T>> {
+  const currentConfig = getConfig();
+  const response = await axios.request({
+    method,
+    url: `${BASE_URL}${path}`,
+    data,
+    headers: {
+      accept: 'application/json',
+      'content-type': 'application/json',
+      'api-key': currentConfig.apiKey,
+    },
+    timeout: TIMEOUT,
+    validateStatus: () => true,
+  });
+
+  return { status: response.status, data: response.data as T };
+}
+
+export const sendEmail = (body: BrevoEmailBody): Promise<ApiResponse<BrevoEmailResponse>> =>
+  request<BrevoEmailResponse>('post', '/smtp/email', body);
+
+export const sendBatchEmail = (body: BrevoBatchBody): Promise<ApiResponse<BrevoBatchResponse>> =>
+  request<BrevoBatchResponse>('post', '/smtp/email', body);
