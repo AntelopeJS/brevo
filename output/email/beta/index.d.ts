@@ -19,7 +19,7 @@ export interface BufferAttachment extends BaseAttachment {
 }
 export interface Base64Attachment extends BaseAttachment {
     content: string;
-    encoding: 'base64';
+    encoding: "base64";
 }
 export interface PathAttachment extends BaseAttachment {
     path: string;
@@ -44,7 +44,7 @@ export interface ScheduleOptions {
     /** IANA timezone (e.g., "Europe/Paris") */
     timezone?: string;
 }
-export type EmailPriority = 'high' | 'normal' | 'low';
+export type EmailPriority = "high" | "normal" | "low";
 export interface EmailParams {
     /** Recipient(s) */
     to: EmailAddress | EmailAddress[];
@@ -95,7 +95,7 @@ export interface InlineTemplate {
     /** Template content with placeholders */
     content: string;
     /** Content type */
-    type: 'html' | 'text';
+    type: "html" | "text";
     /** Template engine hint (e.g., "handlebars", "mustache") */
     engine?: string;
 }
@@ -137,7 +137,7 @@ export interface BatchEmailParams {
     continueOnError?: boolean;
 }
 /** Email delivery status */
-export type EmailStatus = 'queued' | 'sent' | 'delivered' | 'failed' | 'rejected' | 'scheduled' | 'unknown';
+export type EmailStatus = "queued" | "sent" | "delivered" | "failed" | "rejected" | "scheduled" | "unknown";
 export interface EmailError {
     code: string;
     /** Human-readable message */
