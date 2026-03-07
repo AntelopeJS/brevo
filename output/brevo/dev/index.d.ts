@@ -21,7 +21,7 @@ export interface SendTransactionalSMS {
     sender: string;
     recipient: string;
     content: string;
-    type?: 'transactional' | 'marketing';
+    type?: "transactional" | "marketing";
     tag?: string;
     webUrl?: string;
     unicodeEnabled?: boolean;
