@@ -1,3 +1,4 @@
+import { Logging } from "@ajs/logging/beta";
 import type {
   Attachment,
   BatchEmailMessage,
@@ -11,13 +12,8 @@ import type {
   ProviderCapabilities,
   ProviderTemplate,
   TemplateEmailParams,
-} from '../../../interfaces/email/beta';
-import { Logging } from '@ajs/logging/beta';
+} from "../../../interfaces/email/beta";
 import {
-  sendEmail,
-  sendBatchEmail,
-  getDefaultSender,
-  getEmailWhitelist,
   type ApiResponse,
   type BrevoAddress,
   type BrevoAttachment,
@@ -25,7 +21,11 @@ import {
   type BrevoEmailBody,
   type BrevoEmailResponse,
   type BrevoMessageVersion,
-} from './client';
+  getDefaultSender,
+  getEmailWhitelist,
+  sendBatchEmail,
+  sendEmail,
+} from "./client";
 
 interface WhitelistResult {
   to: EmailAddress[];
@@ -59,12 +59,13 @@ interface BatchScope {
   sender: BrevoAddress;
 }
 
-const PROVIDER_NAME = 'brevo';
+const PROVIDER_NAME = "brevo";
 const BATCH_CHUNK_SIZE = 1000;
 const HTTP_SUCCESS_MIN = 200;
 const HTTP_SUCCESS_MAX = 299;
-const MISSING_SENDER_CODE = 'MISSING_SENDER';
-const MISSING_SENDER_MESSAGE = 'No sender address provided and no default sender configured';
+const MISSING_SENDER_CODE = "MISSING_SENDER";
+const MISSING_SENDER_MESSAGE =
+  "No sender address provided and no default sender configured";
 
 const PROVIDER_CAPABILITIES: ProviderCapabilities = {
   name: PROVIDER_NAME,
@@ -89,10 +90,14 @@ function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
-function createErrorResponse(code: string, message: string, retryable: boolean): EmailResponse {
+function createErrorResponse(
+  code: string,
+  message: string,
+  retryable: boolean,
+): EmailResponse {
   return {
     success: false,
-    status: 'failed',
+    status: "failed",
     error: { code, message, retryable },
     timestamp: new Date(),
     provider: PROVIDER_NAME,
@@ -102,7 +107,7 @@ function createErrorResponse(code: string, message: string, retryable: boolean):
 function createSuccessResponse(messageId?: string): EmailResponse {
   return {
     success: true,
-    status: 'queued',
+    status: "queued",
     messageId,
     timestamp: new Date(),
     provider: PROVIDER_NAME,
@@ -118,21 +123,27 @@ function createBatchItemResponse(
   return { ...base, batchId, index, recipient };
 }
 
-function mapApiResponse(response: ApiResponse<BrevoEmailResponse>): EmailResponse {
+function mapApiResponse(
+  response: ApiResponse<BrevoEmailResponse>,
+): EmailResponse {
   if (isHttpSuccess(response.status)) {
     return createSuccessResponse(response.data?.messageId);
   }
 
-  const errorCode = response.data?.code ?? 'API_ERROR';
+  const errorCode = response.data?.code ?? "API_ERROR";
   const errorMessage = response.data?.message ?? `HTTP ${response.status}`;
   return createErrorResponse(errorCode, errorMessage, response.status >= 500);
 }
 
 function formatAddress(address: EmailAddress): BrevoAddress {
-  return typeof address === 'string' ? { email: address } : { email: address.email, name: address.name };
+  return typeof address === "string"
+    ? { email: address }
+    : { email: address.email, name: address.name };
 }
 
-function formatAddresses(addresses: EmailAddress | EmailAddress[] | undefined): BrevoAddress[] | undefined {
+function formatAddresses(
+  addresses: EmailAddress | EmailAddress[] | undefined,
+): BrevoAddress[] | undefined {
   if (!addresses) {
     return undefined;
   }
@@ -144,13 +155,17 @@ function formatAddresses(addresses: EmailAddress | EmailAddress[] | undefined): 
   return [formatAddress(addresses)];
 }
 
-function formatSingleAddress(addresses: EmailAddress | EmailAddress[] | undefined): BrevoAddress | undefined {
+function formatSingleAddress(
+  addresses: EmailAddress | EmailAddress[] | undefined,
+): BrevoAddress | undefined {
   const normalized = normalizeAddresses(addresses);
   const firstAddress = normalized[0];
   return firstAddress ? formatAddress(firstAddress) : undefined;
 }
 
-function normalizeAddresses(addresses: EmailAddress | EmailAddress[] | undefined): EmailAddress[] {
+function normalizeAddresses(
+  addresses: EmailAddress | EmailAddress[] | undefined,
+): EmailAddress[] {
   if (!addresses) {
     return [];
   }
@@ -159,16 +174,19 @@ function normalizeAddresses(addresses: EmailAddress | EmailAddress[] | undefined
 }
 
 function extractEmail(address: EmailAddress): string {
-  return typeof address === 'string' ? address : address.email;
+  return typeof address === "string" ? address : address.email;
 }
 
 function getFirstRecipient(to: EmailAddress | EmailAddress[]): string {
   const recipients = normalizeAddresses(to);
   const firstRecipient = recipients[0];
-  return firstRecipient ? extractEmail(firstRecipient) : '';
+  return firstRecipient ? extractEmail(firstRecipient) : "";
 }
 
-function filterWhitelistedAddresses(addresses: EmailAddress[], patterns: RegExp[]): EmailAddress[] {
+function filterWhitelistedAddresses(
+  addresses: EmailAddress[],
+  patterns: RegExp[],
+): EmailAddress[] {
   return addresses.filter((address) => {
     const email = extractEmail(address);
     const isAllowed = patterns.some((pattern) => pattern.test(email));
@@ -194,7 +212,9 @@ function filterOptionalWhitelistedAddresses(
   return filtered.length > 0 ? filtered : undefined;
 }
 
-function applyWhitelist(params: Pick<EmailParams, 'to' | 'cc' | 'bcc'>): WhitelistResult {
+function applyWhitelist(
+  params: Pick<EmailParams, "to" | "cc" | "bcc">,
+): WhitelistResult {
   const whitelist = getEmailWhitelist();
   const normalizedTo = normalizeAddresses(params.to);
 
@@ -218,7 +238,10 @@ function applyWhitelist(params: Pick<EmailParams, 'to' | 'cc' | 'bcc'>): Whiteli
   return { to, cc, bcc, isEmpty: to.length === 0 };
 }
 
-function applyFilteredRecipientsToEmailParams(params: EmailParams, filtered: WhitelistResult): EmailParams {
+function applyFilteredRecipientsToEmailParams(
+  params: EmailParams,
+  filtered: WhitelistResult,
+): EmailParams {
   const nextParams: EmailParams = { ...params, to: filtered.to };
 
   delete nextParams.cc;
@@ -236,15 +259,15 @@ function applyFilteredRecipientsToEmailParams(params: EmailParams, filtered: Whi
 }
 
 function mapAttachmentContent(attachment: Attachment): string | undefined {
-  if (!('content' in attachment)) {
+  if (!("content" in attachment)) {
     return undefined;
   }
 
   if (attachment.content instanceof Buffer) {
-    return attachment.content.toString('base64');
+    return attachment.content.toString("base64");
   }
 
-  if ('encoding' in attachment && attachment.encoding === 'base64') {
+  if ("encoding" in attachment && attachment.encoding === "base64") {
     return attachment.content;
   }
 
@@ -252,12 +275,14 @@ function mapAttachmentContent(attachment: Attachment): string | undefined {
 }
 
 function mapAttachment(attachment: Attachment): BrevoAttachment | null {
-  if ('path' in attachment) {
-    Logging.Error(`[brevo/email] PathAttachment not supported, "${attachment.filename}" ignored`);
+  if ("path" in attachment) {
+    Logging.Error(
+      `[brevo/email] PathAttachment not supported, "${attachment.filename}" ignored`,
+    );
     return null;
   }
 
-  if ('url' in attachment) {
+  if ("url" in attachment) {
     return { name: attachment.filename, url: attachment.url };
   }
 
@@ -269,7 +294,9 @@ function mapAttachment(attachment: Attachment): BrevoAttachment | null {
   return { name: attachment.filename, content };
 }
 
-function mapAttachments(attachments: Attachment[] | undefined): BrevoAttachment[] | undefined {
+function mapAttachments(
+  attachments: Attachment[] | undefined,
+): BrevoAttachment[] | undefined {
   if (!attachments || attachments.length === 0) {
     return undefined;
   }
@@ -283,14 +310,18 @@ function mapAttachments(attachments: Attachment[] | undefined): BrevoAttachment[
 
 function stringifyTemplateValue(value: unknown): string {
   if (value === null || value === undefined) {
-    return '';
+    return "";
   }
 
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return value;
   }
 
-  if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+  if (
+    typeof value === "number" ||
+    typeof value === "boolean" ||
+    typeof value === "bigint"
+  ) {
     return String(value);
   }
 
@@ -298,33 +329,44 @@ function stringifyTemplateValue(value: unknown): string {
     return value.toISOString();
   }
 
-  if (Array.isArray(value) || typeof value === 'object') {
-    return JSON.stringify(value) ?? '';
+  if (Array.isArray(value) || typeof value === "object") {
+    return JSON.stringify(value) ?? "";
   }
 
-  return '';
+  return "";
 }
 
-function renderTemplate(template: InlineTemplate, variables: Record<string, unknown>): string {
+function renderTemplate(
+  template: InlineTemplate,
+  variables: Record<string, unknown>,
+): string {
   return Object.entries(variables).reduce((content, [key, value]) => {
-    const tokenPattern = new RegExp(`\\{\\{\\s*${key}\\s*\\}\\}`, 'g');
+    const tokenPattern = new RegExp(`\\{\\{\\s*${key}\\s*\\}\\}`, "g");
     return content.replace(tokenPattern, stringifyTemplateValue(value));
   }, template.content);
 }
 
-function isProviderTemplate(template: ProviderTemplate | InlineTemplate): template is ProviderTemplate {
-  return 'id' in template;
+function isProviderTemplate(
+  template: ProviderTemplate | InlineTemplate,
+): template is ProviderTemplate {
+  return "id" in template;
 }
 
-function formatScheduledAt(schedule: EmailParams['schedule']): string | undefined {
+function formatScheduledAt(
+  schedule: EmailParams["schedule"],
+): string | undefined {
   if (!schedule?.sendAt) {
     return undefined;
   }
 
-  return schedule.sendAt instanceof Date ? schedule.sendAt.toISOString() : schedule.sendAt;
+  return schedule.sendAt instanceof Date
+    ? schedule.sendAt.toISOString()
+    : schedule.sendAt;
 }
 
-function resolveSender(from: EmailAddress | undefined): BrevoAddress | undefined {
+function resolveSender(
+  from: EmailAddress | undefined,
+): BrevoAddress | undefined {
   if (from) {
     return formatAddress(from);
   }
@@ -333,10 +375,17 @@ function resolveSender(from: EmailAddress | undefined): BrevoAddress | undefined
 }
 
 function createMissingSenderResponse(): EmailResponse {
-  return createErrorResponse(MISSING_SENDER_CODE, MISSING_SENDER_MESSAGE, false);
+  return createErrorResponse(
+    MISSING_SENDER_CODE,
+    MISSING_SENDER_MESSAGE,
+    false,
+  );
 }
 
-function buildEmailBody(params: EmailParams, sender: BrevoAddress): BrevoEmailBody {
+function buildEmailBody(
+  params: EmailParams,
+  sender: BrevoAddress,
+): BrevoEmailBody {
   const body: BrevoEmailBody = {
     sender,
     to: formatAddresses(params.to) ?? [],
@@ -382,9 +431,16 @@ function buildMessageVersion(params: EmailParams): BrevoMessageVersion {
   return version;
 }
 
-function buildBatchMissingSenderResponse(params: BatchEmailParams): BatchEmailResponse {
+function buildBatchMissingSenderResponse(
+  params: BatchEmailParams,
+): BatchEmailResponse {
   const responses = params.messages.map((message, index) =>
-    createBatchItemResponse(createMissingSenderResponse(), message.batchId, index, getFirstRecipient(message.to)),
+    createBatchItemResponse(
+      createMissingSenderResponse(),
+      message.batchId,
+      index,
+      getFirstRecipient(message.to),
+    ),
   );
 
   return {
@@ -396,7 +452,10 @@ function buildBatchMissingSenderResponse(params: BatchEmailParams): BatchEmailRe
   };
 }
 
-function mergeBatchMessage(defaults: Partial<EmailParams> | undefined, message: BatchEmailMessage): EmailParams {
+function mergeBatchMessage(
+  defaults: Partial<EmailParams> | undefined,
+  message: BatchEmailMessage,
+): EmailParams {
   return { ...defaults, ...message };
 }
 
@@ -413,9 +472,16 @@ function createInitialBatchState(params: BatchEmailParams): BatchState {
     const filtered = applyWhitelist(merged);
 
     if (filtered.isEmpty) {
-      Logging.Warn('[brevo/email] All recipients filtered by whitelist, skipping batch message');
+      Logging.Warn(
+        "[brevo/email] All recipients filtered by whitelist, skipping batch message",
+      );
       state.responses.push(
-        createBatchItemResponse(createSuccessResponse(), message.batchId, index, getFirstRecipient(merged.to)),
+        createBatchItemResponse(
+          createSuccessResponse(),
+          message.batchId,
+          index,
+          getFirstRecipient(merged.to),
+        ),
       );
       state.successful += 1;
       return;
@@ -441,7 +507,10 @@ function splitIntoChunks<T>(items: T[], chunkSize: number): T[][] {
   return chunks;
 }
 
-function buildBatchBody(chunk: BatchPreparedMessage[], scope: BatchScope): BrevoBatchBody {
+function buildBatchBody(
+  chunk: BatchPreparedMessage[],
+  scope: BatchScope,
+): BrevoBatchBody {
   const firstParams = chunk[0]?.params;
   const body: BrevoBatchBody = {
     sender: scope.sender,
@@ -462,7 +531,10 @@ function buildBatchBody(chunk: BatchPreparedMessage[], scope: BatchScope): Brevo
   return body;
 }
 
-function buildChunkSuccessProgress(chunk: BatchPreparedMessage[], messageIds: string[]): BatchProgress {
+function buildChunkSuccessProgress(
+  chunk: BatchPreparedMessage[],
+  messageIds: string[],
+): BatchProgress {
   const responses = chunk.map((entry, index) =>
     createBatchItemResponse(
       createSuccessResponse(messageIds[index]),
@@ -479,9 +551,17 @@ function buildChunkSuccessProgress(chunk: BatchPreparedMessage[], messageIds: st
   };
 }
 
-function buildChunkFailureProgress(chunk: BatchPreparedMessage[], error: EmailResponse): BatchProgress {
+function buildChunkFailureProgress(
+  chunk: BatchPreparedMessage[],
+  error: EmailResponse,
+): BatchProgress {
   const responses = chunk.map((entry) =>
-    createBatchItemResponse(error, entry.batchId, entry.index, getFirstRecipient(entry.params.to)),
+    createBatchItemResponse(
+      error,
+      entry.batchId,
+      entry.index,
+      getFirstRecipient(entry.params.to),
+    ),
   );
 
   return {
@@ -501,26 +581,49 @@ async function executeBatchChunk(
 
     if (isHttpSuccess(response.status)) {
       const messageIds = response.data?.messageIds ?? [];
-      return { ...buildChunkSuccessProgress(chunk, messageIds), shouldStop: false };
+      return {
+        ...buildChunkSuccessProgress(chunk, messageIds),
+        shouldStop: false,
+      };
     }
 
-    const errorCode = response.data?.code ?? 'API_ERROR';
+    const errorCode = response.data?.code ?? "API_ERROR";
     const errorMessage = response.data?.message ?? `HTTP ${response.status}`;
-    const error = createErrorResponse(errorCode, errorMessage, response.status >= 500);
-    return { ...buildChunkFailureProgress(chunk, error), shouldStop: !continueOnError };
+    const error = createErrorResponse(
+      errorCode,
+      errorMessage,
+      response.status >= 500,
+    );
+    return {
+      ...buildChunkFailureProgress(chunk, error),
+      shouldStop: !continueOnError,
+    };
   } catch (error) {
-    const batchError = createErrorResponse('BATCH_SEND_FAILED', getErrorMessage(error), true);
-    return { ...buildChunkFailureProgress(chunk, batchError), shouldStop: !continueOnError };
+    const batchError = createErrorResponse(
+      "BATCH_SEND_FAILED",
+      getErrorMessage(error),
+      true,
+    );
+    return {
+      ...buildChunkFailureProgress(chunk, batchError),
+      shouldStop: !continueOnError,
+    };
   }
 }
 
-function appendBatchProgress(target: BatchProgress, source: BatchProgress): void {
+function appendBatchProgress(
+  target: BatchProgress,
+  source: BatchProgress,
+): void {
   target.responses.push(...source.responses);
   target.successful += source.successful;
   target.failed += source.failed;
 }
 
-function createBatchResponse(total: number, progress: BatchProgress): BatchEmailResponse {
+function createBatchResponse(
+  total: number,
+  progress: BatchProgress,
+): BatchEmailResponse {
   return {
     success: progress.failed === 0,
     total,
@@ -537,7 +640,7 @@ function buildInlineTemplateEmailParams(
 ): EmailParams {
   const emailParams: EmailParams = {
     to: params.to,
-    subject: params.subject ?? '',
+    subject: params.subject ?? "",
     from: params.from,
     replyTo: params.replyTo,
     cc: params.cc,
@@ -550,7 +653,7 @@ function buildInlineTemplateEmailParams(
     providerOptions: params.providerOptions,
   };
 
-  if (template.type === 'html') {
+  if (template.type === "html") {
     emailParams.html = renderedContent;
   } else {
     emailParams.text = renderedContent;
@@ -573,7 +676,7 @@ function buildTemplateBody(
   const body: BrevoEmailBody = {
     sender,
     to: formatAddresses(filtered.to) ?? [],
-    subject: params.subject ?? '',
+    subject: params.subject ?? "",
     templateId,
   };
 
@@ -594,18 +697,32 @@ function buildTemplateBody(
   return body;
 }
 
-async function sendInlineTemplate(params: TemplateEmailParams): Promise<EmailResponse> {
+async function sendInlineTemplate(
+  params: TemplateEmailParams,
+): Promise<EmailResponse> {
   if (isProviderTemplate(params.template)) {
-    return createErrorResponse('INVALID_TEMPLATE', 'Expected inline template', false);
+    return createErrorResponse(
+      "INVALID_TEMPLATE",
+      "Expected inline template",
+      false,
+    );
   }
 
   const rendered = renderTemplate(params.template, params.variables ?? {});
-  return Send(buildInlineTemplateEmailParams(params, params.template, rendered));
+  return Send(
+    buildInlineTemplateEmailParams(params, params.template, rendered),
+  );
 }
 
-async function sendProviderTemplate(params: TemplateEmailParams): Promise<EmailResponse> {
+async function sendProviderTemplate(
+  params: TemplateEmailParams,
+): Promise<EmailResponse> {
   if (!isProviderTemplate(params.template)) {
-    return createErrorResponse('INVALID_TEMPLATE', 'Expected provider template', false);
+    return createErrorResponse(
+      "INVALID_TEMPLATE",
+      "Expected provider template",
+      false,
+    );
   }
 
   const sender = resolveSender(params.from);
@@ -616,7 +733,7 @@ async function sendProviderTemplate(params: TemplateEmailParams): Promise<EmailR
   const templateId = parseTemplateId(params.template.id);
   if (templateId === null) {
     return createErrorResponse(
-      'INVALID_TEMPLATE_ID',
+      "INVALID_TEMPLATE_ID",
       `Template ID must be a valid number, got: ${params.template.id}`,
       false,
     );
@@ -624,11 +741,15 @@ async function sendProviderTemplate(params: TemplateEmailParams): Promise<EmailR
 
   const filtered = applyWhitelist(params);
   if (filtered.isEmpty) {
-    Logging.Warn('[brevo/email] All recipients filtered by whitelist, skipping template send');
+    Logging.Warn(
+      "[brevo/email] All recipients filtered by whitelist, skipping template send",
+    );
     return createSuccessResponse();
   }
 
-  const response = await sendEmail(buildTemplateBody(params, sender, templateId, filtered));
+  const response = await sendEmail(
+    buildTemplateBody(params, sender, templateId, filtered),
+  );
   return mapApiResponse(response);
 }
 
@@ -642,18 +763,27 @@ export async function Send(params: EmailParams): Promise<EmailResponse> {
 
     const filtered = applyWhitelist(params);
     if (filtered.isEmpty) {
-      Logging.Warn('[brevo/email] All recipients filtered by whitelist, skipping send');
+      Logging.Warn(
+        "[brevo/email] All recipients filtered by whitelist, skipping send",
+      );
       return createSuccessResponse();
     }
 
-    const response = await sendEmail(buildEmailBody(applyFilteredRecipientsToEmailParams(params, filtered), sender));
+    const response = await sendEmail(
+      buildEmailBody(
+        applyFilteredRecipientsToEmailParams(params, filtered),
+        sender,
+      ),
+    );
     return mapApiResponse(response);
   } catch (error) {
-    return createErrorResponse('SEND_FAILED', getErrorMessage(error), true);
+    return createErrorResponse("SEND_FAILED", getErrorMessage(error), true);
   }
 }
 
-export async function SendBatch(params: BatchEmailParams): Promise<BatchEmailResponse> {
+export async function SendBatch(
+  params: BatchEmailParams,
+): Promise<BatchEmailResponse> {
   const sender = resolveSender(params.defaults?.from);
   if (!sender) {
     return buildBatchMissingSenderResponse(params);
@@ -669,7 +799,11 @@ export async function SendBatch(params: BatchEmailParams): Promise<BatchEmailRes
   const chunks = splitIntoChunks(state.pending, BATCH_CHUNK_SIZE);
 
   for (const chunk of chunks) {
-    const chunkResult = await executeBatchChunk(chunk, buildBatchBody(chunk, scope), continueOnError);
+    const chunkResult = await executeBatchChunk(
+      chunk,
+      buildBatchBody(chunk, scope),
+      continueOnError,
+    );
     appendBatchProgress(state, chunkResult);
     if (chunkResult.shouldStop) {
       break;
@@ -679,7 +813,9 @@ export async function SendBatch(params: BatchEmailParams): Promise<BatchEmailRes
   return createBatchResponse(params.messages.length, state);
 }
 
-export async function SendTemplate(params: TemplateEmailParams): Promise<EmailResponse> {
+export async function SendTemplate(
+  params: TemplateEmailParams,
+): Promise<EmailResponse> {
   try {
     if (!isProviderTemplate(params.template)) {
       return sendInlineTemplate(params);
@@ -687,7 +823,11 @@ export async function SendTemplate(params: TemplateEmailParams): Promise<EmailRe
 
     return sendProviderTemplate(params);
   } catch (error) {
-    return createErrorResponse('SEND_TEMPLATE_FAILED', getErrorMessage(error), true);
+    return createErrorResponse(
+      "SEND_TEMPLATE_FAILED",
+      getErrorMessage(error),
+      true,
+    );
   }
 }
 

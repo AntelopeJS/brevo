@@ -1,14 +1,16 @@
-import {
-  APIResponse,
+import type {
   AddContact,
+  AddContactList,
+  APIResponse,
+  Contact,
   SendTransactionalMail,
   SendTransactionalSMS,
   UpdateContact,
-  AddContactList,
-  Contact,
-} from '@ajs.local/brevo/dev';
-export { APIResponse } from '@ajs.local/brevo/dev';
-import axios from 'axios';
+} from "@ajs.local/brevo/dev";
+
+export { APIResponse } from "@ajs.local/brevo/dev";
+
+import axios from "axios";
 
 export interface BrevoAddress {
   email: string;
@@ -27,16 +29,16 @@ export interface BrevoConfig {
   emailWhitelist?: string[];
 }
 
-const BASE_URL = 'https://api.brevo.com/v3';
+const BASE_URL = "https://api.brevo.com/v3";
 const TIMEOUT = 30000;
 
-type HttpMethod = 'get' | 'post' | 'put' | 'delete';
+type HttpMethod = "get" | "post" | "put" | "delete";
 
 let config: BrevoConfig | undefined;
 
 function getConfig(): BrevoConfig {
   if (!config) {
-    throw new Error('Brevo config not initialized');
+    throw new Error("Brevo config not initialized");
   }
   return config;
 }
@@ -49,16 +51,20 @@ export function getDefaultSender(): BrevoAddress | undefined {
   return getConfig().defaultSender;
 }
 
-async function request<T>(method: HttpMethod, path: string, data?: unknown): Promise<APIResponse<T>> {
+async function request<T>(
+  method: HttpMethod,
+  path: string,
+  data?: unknown,
+): Promise<APIResponse<T>> {
   const currentConfig = getConfig();
   const response = await axios.request({
     method,
     url: `${BASE_URL}${path}`,
     data,
     headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      'api-key': currentConfig.apiKey,
+      accept: "application/json",
+      "content-type": "application/json",
+      "api-key": currentConfig.apiKey,
     },
     timeout: TIMEOUT,
     validateStatus: () => true,
@@ -115,30 +121,42 @@ export interface BatchEmailResponse {
 }
 
 export const sendEmail = (body: SendEmailBody): Promise<APIResponse<void>> =>
-  request<void>('post', '/smtp/email', body);
+  request<void>("post", "/smtp/email", body);
 
-export const sendBatchEmail = (body: SendBatchEmailBody): Promise<APIResponse<BatchEmailResponse>> =>
-  request<BatchEmailResponse>('post', '/smtp/email', body);
+export const sendBatchEmail = (
+  body: SendBatchEmailBody,
+): Promise<APIResponse<BatchEmailResponse>> =>
+  request<BatchEmailResponse>("post", "/smtp/email", body);
 
-export const sendTransactionalMail = (body: SendTransactionalMail): Promise<APIResponse<void>> =>
-  request<void>('post', '/smtp/email', body);
+export const sendTransactionalMail = (
+  body: SendTransactionalMail,
+): Promise<APIResponse<void>> => request<void>("post", "/smtp/email", body);
 
-export const sendTransactionalSMS = (body: SendTransactionalSMS): Promise<APIResponse<void>> =>
-  request<void>('post', '/transactionalSMS/sms', body);
+export const sendTransactionalSMS = (
+  body: SendTransactionalSMS,
+): Promise<APIResponse<void>> =>
+  request<void>("post", "/transactionalSMS/sms", body);
 
-export const contactDetails = (identifier: string): Promise<APIResponse<Contact>> =>
-  request<Contact>('get', `/contacts/${encodeURIComponent(identifier)}`);
+export const contactDetails = (
+  identifier: string,
+): Promise<APIResponse<Contact>> =>
+  request<Contact>("get", `/contacts/${encodeURIComponent(identifier)}`);
 
-export const addContact = (body: AddContact): Promise<APIResponse<void>> => request<void>('post', '/contacts', body);
+export const addContact = (body: AddContact): Promise<APIResponse<void>> =>
+  request<void>("post", "/contacts", body);
 
-export const updateContact = (identifier: string, body: UpdateContact): Promise<APIResponse<void>> =>
-  request<void>('put', `/contacts/${encodeURIComponent(identifier)}`, body);
+export const updateContact = (
+  identifier: string,
+  body: UpdateContact,
+): Promise<APIResponse<void>> =>
+  request<void>("put", `/contacts/${encodeURIComponent(identifier)}`, body);
 
 export const deleteContact = (identifier: string): Promise<APIResponse<void>> =>
-  request<void>('delete', `/contacts/${encodeURIComponent(identifier)}`);
+  request<void>("delete", `/contacts/${encodeURIComponent(identifier)}`);
 
-export const addContactList = (body: AddContactList): Promise<APIResponse<void>> =>
-  request<void>('post', '/contacts/lists', body);
+export const addContactList = (
+  body: AddContactList,
+): Promise<APIResponse<void>> => request<void>("post", "/contacts/lists", body);
 
 export const deleteContactList = (listId: number): Promise<APIResponse<void>> =>
-  request<void>('delete', `/contacts/lists/${listId}`);
+  request<void>("delete", `/contacts/lists/${listId}`);

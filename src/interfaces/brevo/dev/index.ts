@@ -1,18 +1,27 @@
-import { InterfaceFunction } from '@ajs/core/beta';
+import { InterfaceFunction } from "@ajs/core/beta";
 
 /**
  * @internal
  */
 export namespace internal {
-  export const sendTransactionalMailProxy = InterfaceFunction<(body: SendTransactionalMail) => Promise<APIResponse>>();
-  export const sendTransactionalSMSProxy = InterfaceFunction<(body: SendTransactionalSMS) => Promise<APIResponse>>();
-  export const contactDetailsProxy = InterfaceFunction<(identifier: string) => Promise<APIResponse<Contact>>>();
-  export const addContactProxy = InterfaceFunction<(body: AddContact) => Promise<APIResponse>>();
+  export const sendTransactionalMailProxy =
+    InterfaceFunction<(body: SendTransactionalMail) => Promise<APIResponse>>();
+  export const sendTransactionalSMSProxy =
+    InterfaceFunction<(body: SendTransactionalSMS) => Promise<APIResponse>>();
+  export const contactDetailsProxy =
+    InterfaceFunction<(identifier: string) => Promise<APIResponse<Contact>>>();
+  export const addContactProxy =
+    InterfaceFunction<(body: AddContact) => Promise<APIResponse>>();
   export const updateContactProxy =
-    InterfaceFunction<(identifier: string, body: UpdateContact) => Promise<APIResponse>>();
-  export const deleteContactProxy = InterfaceFunction<(identifier: string) => Promise<APIResponse>>();
-  export const addContactListProxy = InterfaceFunction<(body: AddContactList) => Promise<APIResponse>>();
-  export const deleteContactListProxy = InterfaceFunction<(identifier: number) => Promise<APIResponse>>();
+    InterfaceFunction<
+      (identifier: string, body: UpdateContact) => Promise<APIResponse>
+    >();
+  export const deleteContactProxy =
+    InterfaceFunction<(identifier: string) => Promise<APIResponse>>();
+  export const addContactListProxy =
+    InterfaceFunction<(body: AddContactList) => Promise<APIResponse>>();
+  export const deleteContactListProxy =
+    InterfaceFunction<(identifier: number) => Promise<APIResponse>>();
 }
 
 export interface APIResponse<T = unknown> {
@@ -43,14 +52,16 @@ export interface SendTransactionalSMS {
   sender: string;
   recipient: string;
   content: string;
-  type?: 'transactional' | 'marketing';
+  type?: "transactional" | "marketing";
   tag?: string;
   webUrl?: string;
   unicodeEnabled?: boolean;
   organisationPrefix?: string;
 }
 
-export function SendTemplate(body: SendTransactionalMail): Promise<APIResponse> {
+export function SendTemplate(
+  body: SendTransactionalMail,
+): Promise<APIResponse> {
   return internal.sendTransactionalMailProxy(body);
 }
 
@@ -137,7 +148,9 @@ export interface AddContactList {
   folderId: number;
 }
 
-export function contactDetails(identifier: string): Promise<APIResponse<Contact>> {
+export function contactDetails(
+  identifier: string,
+): Promise<APIResponse<Contact>> {
   return internal.contactDetailsProxy(identifier);
 }
 
@@ -145,7 +158,10 @@ export function AddContact(body: AddContact): Promise<APIResponse> {
   return internal.addContactProxy(body);
 }
 
-export function updateContact(identifier: string, body: UpdateContact): Promise<APIResponse> {
+export function updateContact(
+  identifier: string,
+  body: UpdateContact,
+): Promise<APIResponse> {
   return internal.updateContactProxy(identifier, body);
 }
 

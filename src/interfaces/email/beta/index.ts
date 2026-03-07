@@ -1,4 +1,4 @@
-import { InterfaceFunction } from '@ajs/core/beta';
+import { InterfaceFunction } from "@ajs/core/beta";
 
 // =============================================================================
 // EMAIL ADDRESS TYPES
@@ -33,7 +33,7 @@ export interface BufferAttachment extends BaseAttachment {
 
 export interface Base64Attachment extends BaseAttachment {
   content: string;
-  encoding: 'base64';
+  encoding: "base64";
 }
 
 export interface PathAttachment extends BaseAttachment {
@@ -44,7 +44,11 @@ export interface UrlAttachment extends BaseAttachment {
   url: string;
 }
 
-export type Attachment = BufferAttachment | Base64Attachment | PathAttachment | UrlAttachment;
+export type Attachment =
+  | BufferAttachment
+  | Base64Attachment
+  | PathAttachment
+  | UrlAttachment;
 
 // =============================================================================
 // TRACKING & SCHEDULING OPTIONS
@@ -72,7 +76,7 @@ export interface ScheduleOptions {
 // EMAIL PARAMS
 // =============================================================================
 
-export type EmailPriority = 'high' | 'normal' | 'low';
+export type EmailPriority = "high" | "normal" | "low";
 
 export interface EmailParams {
   /** Recipient(s) */
@@ -139,7 +143,7 @@ export interface InlineTemplate {
   /** Template content with placeholders */
   content: string;
   /** Content type */
-  type: 'html' | 'text';
+  type: "html" | "text";
   /** Template engine hint (e.g., "handlebars", "mustache") */
   engine?: string;
 }
@@ -194,7 +198,14 @@ export interface BatchEmailParams {
 // =============================================================================
 
 /** Email delivery status */
-export type EmailStatus = 'queued' | 'sent' | 'delivered' | 'failed' | 'rejected' | 'scheduled' | 'unknown';
+export type EmailStatus =
+  | "queued"
+  | "sent"
+  | "delivered"
+  | "failed"
+  | "rejected"
+  | "scheduled"
+  | "unknown";
 
 export interface EmailError {
   code: string;
@@ -290,7 +301,8 @@ export interface ProviderCapabilities {
  * });
  * ```
  */
-export const Send = InterfaceFunction<(params: EmailParams) => Promise<EmailResponse>>();
+export const Send =
+  InterfaceFunction<(params: EmailParams) => Promise<EmailResponse>>();
 
 /**
  * Send multiple emails in batch
@@ -305,7 +317,10 @@ export const Send = InterfaceFunction<(params: EmailParams) => Promise<EmailResp
  * });
  * ```
  */
-export const SendBatch = InterfaceFunction<(params: BatchEmailParams) => Promise<BatchEmailResponse>>();
+export const SendBatch =
+  InterfaceFunction<
+    (params: BatchEmailParams) => Promise<BatchEmailResponse>
+  >();
 
 /**
  * Send an email using a template
@@ -318,7 +333,8 @@ export const SendBatch = InterfaceFunction<(params: BatchEmailParams) => Promise
  * });
  * ```
  */
-export const SendTemplate = InterfaceFunction<(params: TemplateEmailParams) => Promise<EmailResponse>>();
+export const SendTemplate =
+  InterfaceFunction<(params: TemplateEmailParams) => Promise<EmailResponse>>();
 
 /**
  * Get provider capabilities and limits
@@ -330,4 +346,5 @@ export const SendTemplate = InterfaceFunction<(params: TemplateEmailParams) => P
  * }
  * ```
  */
-export const GetCapabilities = InterfaceFunction<() => Promise<ProviderCapabilities>>();
+export const GetCapabilities =
+  InterfaceFunction<() => Promise<ProviderCapabilities>>();

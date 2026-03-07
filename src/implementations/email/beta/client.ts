@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 export interface BrevoAddress {
   email: string;
@@ -75,16 +75,16 @@ export interface BrevoBatchResponse {
   message?: string;
 }
 
-const BASE_URL = 'https://api.brevo.com/v3';
+const BASE_URL = "https://api.brevo.com/v3";
 const TIMEOUT = 30000;
 
-type HttpMethod = 'get' | 'post' | 'put' | 'delete';
+type HttpMethod = "get" | "post" | "put" | "delete";
 
 let config: EmailClientConfig | undefined;
 
 function getConfig(): EmailClientConfig {
   if (!config) {
-    throw new Error('Email client config not initialized');
+    throw new Error("Email client config not initialized");
   }
   return config;
 }
@@ -101,16 +101,20 @@ export function getEmailWhitelist(): string[] | undefined {
   return getConfig().emailWhitelist;
 }
 
-async function request<T>(method: HttpMethod, path: string, data?: unknown): Promise<ApiResponse<T>> {
+async function request<T>(
+  method: HttpMethod,
+  path: string,
+  data?: unknown,
+): Promise<ApiResponse<T>> {
   const currentConfig = getConfig();
   const response = await axios.request({
     method,
     url: `${BASE_URL}${path}`,
     data,
     headers: {
-      accept: 'application/json',
-      'content-type': 'application/json',
-      'api-key': currentConfig.apiKey,
+      accept: "application/json",
+      "content-type": "application/json",
+      "api-key": currentConfig.apiKey,
     },
     timeout: TIMEOUT,
     validateStatus: () => true,
@@ -119,8 +123,12 @@ async function request<T>(method: HttpMethod, path: string, data?: unknown): Pro
   return { status: response.status, data: response.data as T };
 }
 
-export const sendEmail = (body: BrevoEmailBody): Promise<ApiResponse<BrevoEmailResponse>> =>
-  request<BrevoEmailResponse>('post', '/smtp/email', body);
+export const sendEmail = (
+  body: BrevoEmailBody,
+): Promise<ApiResponse<BrevoEmailResponse>> =>
+  request<BrevoEmailResponse>("post", "/smtp/email", body);
 
-export const sendBatchEmail = (body: BrevoBatchBody): Promise<ApiResponse<BrevoBatchResponse>> =>
-  request<BrevoBatchResponse>('post', '/smtp/email', body);
+export const sendBatchEmail = (
+  body: BrevoBatchBody,
+): Promise<ApiResponse<BrevoBatchResponse>> =>
+  request<BrevoBatchResponse>("post", "/smtp/email", body);
