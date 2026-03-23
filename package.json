@@ -1,6 +1,6 @@
 {
   "name": "@antelopejs/brevo",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A Brevo (Sendinblue) email module that implements the email interface of AntelopeJS",
   "repository": {
     "type": "git",
