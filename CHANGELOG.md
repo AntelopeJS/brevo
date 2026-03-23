@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.2](https://github.com/AntelopeJS/brevo/compare/v0.1.0...v0.0.2) (2026-03-23)
+
+### Features
+
+* add regex-based email whitelist filtering ([dc18a5b](https://github.com/AntelopeJS/brevo/commit/dc18a5bb30279465adf24a16804c69642b38b6b8))
+
 ## [0.1.0](https://github.com/AntelopeJS/brevo/compare/v0.0.1...v0.1.0) (2025-12-30)
 
 ### Features
