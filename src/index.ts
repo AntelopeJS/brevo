@@ -1,18 +1,15 @@
-import { ImplementInterface } from "@ajs/core/beta";
-import { type BrevoConfig, setConfig } from "./brevo";
-import { setConfig as setEmailConfig } from "./implementations/email/beta/client";
+import { ImplementInterface } from "@antelopejs/interface-core";
+import {
+  type EmailClientConfig,
+  setConfig,
+} from "./implementations/email/client";
 
-export async function construct(config: BrevoConfig): Promise<void> {
+export async function construct(config: EmailClientConfig): Promise<void> {
   setConfig(config);
-  setEmailConfig(config);
 
   void ImplementInterface(
-    await import("@ajs.local/brevo/dev"),
-    await import("./implementations/brevo/dev"),
-  );
-  void ImplementInterface(
-    await import("./interfaces/email/beta"),
-    await import("./implementations/email/beta"),
+    await import("@antelopejs/interface-email"),
+    await import("./implementations/email"),
   );
 }
 

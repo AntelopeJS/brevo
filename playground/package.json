@@ -3,32 +3,21 @@
   "version": "0.0.1",
   "main": "dist/index.js",
   "scripts": {},
+  "dependencies": {
+    "@antelopejs/interface-core": "^0.0.2",
+    "@antelopejs/interface-email": "^0.0.2"
+  },
   "devDependencies": {
     "@types/node": "^20.5.7",
     "prettier": "^2.6.1",
     "typescript": "^5.8.3"
   },
   "antelopeJs": {
-    "imports": [
-      {
-        "name": "core@beta",
-        "skipInstall": true
-      },
-      {
-        "name": "logging@beta",
-        "skipInstall": true
-      },
-      {
-        "name": "email@beta",
-        "skipInstall": true
-      }
-    ],
     "baseUrl": "dist",
     "paths": {
       "@/*": [
         "*"
       ]
-    },
-    "importsOptional": []
+    }
   }
 }

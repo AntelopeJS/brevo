@@ -1,5 +1,5 @@
-import { Send } from "@ajs/email/beta";
-import { Logging } from "@ajs/logging/beta";
+import { Logging } from "@antelopejs/interface-core/logging";
+import { Send } from "@antelopejs/interface-email";
 
 const TEST_EMAIL = process.env.TEST_EMAIL;
 

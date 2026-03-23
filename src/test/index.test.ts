@@ -4,7 +4,7 @@ import {
   Send,
   SendBatch,
   SendTemplate,
-} from "@ajs/email/beta";
+} from "@antelopejs/interface-email";
 import axios, { type AxiosResponse } from "axios";
 import sinon from "sinon";
 import type {
@@ -12,8 +12,8 @@ import type {
   BrevoBatchResponse,
   BrevoEmailBody,
   BrevoEmailResponse,
-} from "../../implementations/email/beta/client";
-import { setConfig } from "../../implementations/email/beta/client";
+} from "../implementations/email/client";
+import { setConfig } from "../implementations/email/client";
 
 interface RequestConfig {
   method?: string;

@@ -1,7 +1,7 @@
 {
   "name": "@antelopejs/brevo",
-  "version": "0.1.0",
-  "description": "A flexible email module that implements the brevo interface of antelopejs",
+  "version": "0.0.1",
+  "description": "A Brevo (Sendinblue) email module that implements the email interface of AntelopeJS",
   "repository": {
     "type": "git",
     "url": "https://github.com/AntelopeJS/brevo.git"
@@ -14,42 +14,40 @@
     "newsletter"
   ],
   "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "files": [
     "dist"
   ],
-  "private": true,
   "publishConfig": {
     "access": "public"
   },
   "license": "Apache-2.0",
   "packageManager": "pnpm@10.6.5",
   "scripts": {
-    "build": "tsc",
-    "dev:prepare": "cd playground && ajs module imports install",
+    "build": "rimraf dist && tsc",
     "dev": "dotenv -- ajs project run -w -p playground",
     "format": "biome format --write .",
-    "generate": "ajs module exports generate",
     "lint:fix": "biome check --write .",
     "lint": "biome check .",
     "prepack": "pnpm run build",
-    "prepare": "ajs module imports install",
     "release": "pnpm run lint && pnpm run test && pnpm run prepack && release-it",
     "typecheck": "tsc --noEmit",
-    "test": "dotenv -- ajs module test ."
+    "test": "pnpm run build && dotenv -- ajs module test ."
   },
   "antelopeJs": {
-    "exportsPath": "dist/interfaces",
-    "imports": [
-      "core@beta",
-      "logging@beta"
+    "implements": [
+      "@antelopejs/interface-email"
     ],
-    "importsOptional": [],
-    "test": {
-      "project": "src/test/antelope.test.json",
-      "folder": "dist/test"
-    }
+    "test": "src/test/antelope.test.ts"
   },
   "dependencies": {
+    "@antelopejs/interface-core": "^0.0.2",
+    "@antelopejs/interface-email": "^0.0.2",
     "axios": "^1.8.4"
   },
   "devDependencies": {
@@ -61,8 +59,10 @@
     "@types/sinon": "^17.0.4",
     "chai": "^5.2.0",
     "dotenv-cli": "^11.0.0",
-    "release-it": "^19.0.2",
+    "release-it": "^19.2.4",
+    "release-it-changelogen": "^0.1.0",
     "sinon": "^20.0.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "rimraf": "^6.0.1"
   }
 }

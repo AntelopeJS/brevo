@@ -1,4 +1,4 @@
-import { Logging } from "@ajs/logging/beta";
+import { Logging } from "@antelopejs/interface-core/logging";
 import type {
   Attachment,
   BatchEmailMessage,
@@ -12,7 +12,7 @@ import type {
   ProviderCapabilities,
   ProviderTemplate,
   TemplateEmailParams,
-} from "../../../interfaces/email/beta";
+} from "@antelopejs/interface-email";
 import {
   type ApiResponse,
   type BrevoAddress,
