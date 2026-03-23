@@ -8,21 +8,13 @@
     "releaseName": "v${version}",
     "web": true
   },
-  "npm": {
-    "publish": false
-  },
   "hooks": {
     "before:init": ["pnpm lint"],
     "after:bump": "git add CHANGELOG.md"
   },
   "plugins": {
-    "@release-it/conventional-changelog": {
-      "preset": {
-        "name": "conventionalcommits"
-      },
-      "infile": "CHANGELOG.md",
-      "header": "# Changelog",
-      "ignoreRecommendedBump": true
+    "release-it-changelogen": {
+      "disableVersion": true
     }
   }
 }
