@@ -4,8 +4,8 @@
   "main": "dist/index.js",
   "scripts": {},
   "dependencies": {
-    "@antelopejs/interface-core": "^0.0.2",
-    "@antelopejs/interface-email": "^0.0.2"
+    "@antelopejs/interface-core": "^0.0.5",
+    "@antelopejs/interface-email": "^0.0.4"
   },
   "devDependencies": {
     "@types/node": "^20.5.7",
