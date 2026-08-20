@@ -46,8 +46,8 @@
     "test": "src/test/antelope.test.ts"
   },
   "dependencies": {
-    "@antelopejs/interface-core": "^0.0.6",
-    "@antelopejs/interface-email": "^0.0.4",
+    "@antelopejs/interface-core": ">=0.0.6 <1.0.0",
+    "@antelopejs/interface-email": ">=0.0.4 <1.0.0",
     "axios": "^1.13.6"
   },
   "devDependencies": {
