@@ -1,6 +1,5 @@
 # Changelog
 
-
 ## v0.0.5
 
 [compare changes](https://github.com/AntelopeJS/brevo/compare/v0.0.4...v0.0.5)
@@ -28,4 +27,3 @@
 ### ❤️ Contributors
 
 - Antony Rizzitelli <upd4ting@gmail.com>
-

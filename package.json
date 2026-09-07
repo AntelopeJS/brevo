@@ -2,16 +2,20 @@
   "name": "@antelopejs/brevo",
   "version": "0.0.5",
   "description": "A Brevo (Sendinblue) email module that implements the email interface of AntelopeJS",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/AntelopeJS/brevo.git"
-  },
   "keywords": [
     "antelopejs",
     "brevo",
     "email",
     "mail",
     "newsletter"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AntelopeJS/brevo.git"
+  },
+  "files": [
+    "dist"
   ],
   "main": "dist/index.js",
   "exports": {
@@ -20,15 +24,10 @@
       "default": "./dist/index.js"
     }
   },
-  "files": [
-    "dist"
-  ],
   "publishConfig": {
     "access": "public",
     "provenance": true
   },
-  "license": "Apache-2.0",
-  "packageManager": "pnpm@10.6.5",
   "scripts": {
     "build": "rimraf dist && tsc",
     "dev": "dotenv -- ajs project run -w -p playground",
@@ -41,12 +40,6 @@
     "test": "pnpm run build && dotenv -- ajs module test .",
     "format:check": "oxfmt --check .",
     "knip": "knip"
-  },
-  "antelopeJs": {
-    "implements": [
-      "@antelopejs/interface-email"
-    ],
-    "test": "src/test/antelope.test.ts"
   },
   "dependencies": {
     "@antelopejs/interface-core": ">=0.0.6 <1.0.0",
@@ -69,5 +62,12 @@
     "rimraf": "^6.1.3",
     "sinon": "^20.0.0",
     "typescript": "^5.9.3"
+  },
+  "packageManager": "pnpm@10.6.5",
+  "antelopeJs": {
+    "implements": [
+      "@antelopejs/interface-email"
+    ],
+    "test": "src/test/antelope.test.ts"
   }
 }
