@@ -1,19 +1,20 @@
+import sinon from "sinon";
 import assert from "node:assert";
+import axios, { type AxiosResponse } from "axios";
 import {
   GetCapabilities,
   Send,
   SendBatch,
   SendTemplate,
 } from "@antelopejs/interface-email";
-import axios, { type AxiosResponse } from "axios";
-import sinon from "sinon";
+
+import { setConfig } from "../implementations/email/client";
 import type {
   BrevoBatchBody,
   BrevoBatchResponse,
   BrevoEmailBody,
   BrevoEmailResponse,
 } from "../implementations/email/client";
-import { setConfig } from "../implementations/email/client";
 
 interface RequestConfig {
   method?: string;
