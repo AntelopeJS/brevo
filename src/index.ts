@@ -1,4 +1,5 @@
 import { ImplementInterface } from "@antelopejs/interface-core";
+
 import {
   type EmailClientConfig,
   setConfig,

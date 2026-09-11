@@ -13,6 +13,7 @@ import type {
   ProviderTemplate,
   TemplateEmailParams,
 } from "@antelopejs/interface-email";
+
 import {
   type ApiResponse,
   type BrevoAddress,
