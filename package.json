@@ -30,7 +30,7 @@
   },
   "scripts": {
     "build": "rimraf dist && tsc",
-    "dev": "dotenv -- ajs project run -w -p playground",
+    "dev": "dotenv -- ajs project dev -w -p playground",
     "format": "oxfmt .",
     "lint:fix": "oxlint --fix",
     "lint": "oxlint",
