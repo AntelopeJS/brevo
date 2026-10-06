@@ -30,7 +30,7 @@
   },
   "scripts": {
     "build": "rimraf dist && tsc",
-    "dev": "dotenv -- ajs project run -w -p playground",
+    "dev": "dotenv -- ajs project dev -w -p playground",
     "format": "oxfmt .",
     "lint:fix": "oxlint --fix",
     "lint": "oxlint",
@@ -47,7 +47,7 @@
     "axios": "^1.13.6"
   },
   "devDependencies": {
-    "@antelopejs/core": "^1.9.1",
+    "@antelopejs/core": "^1.13.4",
     "@antelopejs/tooling-configs": "^0.0.4",
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.19.15",
