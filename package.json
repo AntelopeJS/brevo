@@ -9,10 +9,14 @@
     "mail",
     "newsletter"
   ],
+  "homepage": "https://github.com/AntelopeJS/brevo#readme",
+  "bugs": {
+    "url": "https://github.com/AntelopeJS/brevo/issues"
+  },
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AntelopeJS/brevo.git"
+    "url": "git+https://github.com/AntelopeJS/brevo.git"
   },
   "files": [
     "dist"
