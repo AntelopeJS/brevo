@@ -37,7 +37,7 @@
     "dev": "dotenv -- ajs project dev -w -p playground",
     "format": "oxfmt .",
     "lint:fix": "oxlint --fix",
-    "lint": "oxlint",
+    "lint": "oxlint && antelopejs-check-interface-ranges",
     "prepack": "pnpm run build",
     "release": "pnpm run lint && pnpm run test && pnpm run prepack && release-it",
     "typecheck": "tsc --noEmit",
@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@antelopejs/interface-core": ">=0.2.4 <1.0.0",
-    "@antelopejs/interface-email": ">=0.0.6 <1.0.0",
+    "@antelopejs/interface-email": ">=0.0.6 <0.1.0",
     "axios": "^1.13.6"
   },
   "devDependencies": {

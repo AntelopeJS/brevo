@@ -4,7 +4,7 @@ The AntelopeJS module that implements `@antelopejs/interface-email` on the Brevo
 
 ## Versioning
 
-The `@antelopejs/interface-core` and `@antelopejs/interface-email` ranges appear in `package.json`, `playground/package.json`, and the compatibility table in `README.md`; when you change a minimum or a bound, change all three together. `interface-core` is consumed, so `>=minimum <1.0.0` is right for it. This package implements `interface-email` (`antelopeJs.implements`), so while that interface is 0.x its range must stop below the next minor; the current `<1.0.0` bound is legacy, and `pnpm exec antelopejs-check-interface-ranges` (not part of `checks`) reports it.
+The `@antelopejs/interface-core` and `@antelopejs/interface-email` ranges appear in `package.json`, `playground/package.json`, and the compatibility table in `README.md`; when you change a minimum, change all three together. `interface-core` is consumed, so `>=minimum <1.0.0` is right for it. This package implements `interface-email` (`antelopeJs.implements`), so while that interface is 0.x its range in `package.json` and `README.md` stops below the next minor (`>=0.0.6 <0.1.0`). The playground only consumes it, so its range keeps `<1.0.0`. `pnpm run lint` runs `antelopejs-check-interface-ranges`, which enforces both bounds.
 
 ## Tests
 
