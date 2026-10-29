@@ -1,15 +1,8 @@
 {
   "rules": {
-    "antelopejs/no-comments": 4,
-    "anti-slop/no-runtime-typeof": 7,
-    "anti-slop/no-unknown-parameters": 3,
-    "anti-slop/no-unsafe-dictionary-type": 4,
-    "anti-slop/require-safety-comment-for-type-assertion": 8,
-    "eslint/max-lines-per-function": 1,
-    "typescript/unbound-method": 1
+    "anti-slop/no-runtime-typeof": 5,
+    "anti-slop/no-unknown-parameters": 2,
+    "anti-slop/require-safety-comment-for-type-assertion": 1
   },
-  "oversizeFiles": {
-    ".github/social-card.png": 245985,
-    "src/implementations/email/index.ts": 20910
-  }
+  "oversizeFiles": {}
 }

@@ -1,3 +1,4 @@
+import type { TemplateEmailParams } from "@antelopejs/interface-email";
 import axios from "axios";
 
 export interface BrevoAddress {
@@ -35,7 +36,7 @@ export interface BrevoEmailBody {
   tags?: string[];
   scheduledAt?: string;
   templateId?: number;
-  params?: Record<string, unknown>;
+  params?: TemplateEmailParams["variables"];
 }
 
 export interface BrevoMessageVersion {
@@ -47,7 +48,6 @@ export interface BrevoMessageVersion {
   htmlContent?: string;
   textContent?: string;
   attachment?: BrevoAttachment[];
-  params?: Record<string, unknown>;
 }
 
 export interface BrevoBatchBody {
@@ -56,7 +56,6 @@ export interface BrevoBatchBody {
   htmlContent?: string;
   textContent?: string;
   templateId?: number;
-  params?: Record<string, unknown>;
   tags?: string[];
   scheduledAt?: string;
   messageVersions: BrevoMessageVersion[];
@@ -104,7 +103,7 @@ export function getEmailWhitelist(): string[] | undefined {
 async function request<T>(
   method: HttpMethod,
   path: string,
-  data?: unknown,
+  data: BrevoEmailBody | BrevoBatchBody,
 ): Promise<ApiResponse<T>> {
   const currentConfig = getConfig();
   const response = await axios.request({
