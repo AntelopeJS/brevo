@@ -9,7 +9,6 @@
     "typescript/unbound-method": 1
   },
   "oversizeFiles": {
-    ".github/social-card.png": 245985,
     "src/implementations/email/index.ts": 20910
   }
 }
