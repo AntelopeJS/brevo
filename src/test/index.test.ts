@@ -29,21 +29,7 @@ const DEFAULT_RECIPIENT = "recipient@example.com";
 const SMTP_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
 
 describe("Email Interface", () => {
-  beforeEach(() => {
-    setConfig({
-      apiKey: API_KEY,
-      defaultSender: {
-        email: DEFAULT_SENDER_EMAIL,
-        name: DEFAULT_SENDER_NAME,
-      },
-    });
-
-    sinon.stub(axios, "request");
-  });
-
-  afterEach(() => {
-    sinon.restore();
-  });
+  useEmailClientSandbox();
 
   describe("GetCapabilities", () => {
     it("returns brevo capabilities", async () => {
@@ -141,6 +127,10 @@ describe("Email Interface", () => {
       assert.equal(getRequestStub().called, false);
     });
   });
+});
+
+describe("Email Interface", () => {
+  useEmailClientSandbox();
 
   describe("SendBatch", () => {
     it("sends batch emails and maps response IDs", async () => {
@@ -211,6 +201,10 @@ describe("Email Interface", () => {
       assert.equal(getRequestStub().called, false);
     });
   });
+});
+
+describe("Email Interface", () => {
+  useEmailClientSandbox();
 
   describe("SendTemplate", () => {
     it("sends inline template content", async () => {
@@ -277,6 +271,24 @@ describe("Email Interface", () => {
     });
   });
 });
+
+function useEmailClientSandbox(): void {
+  beforeEach(() => {
+    setConfig({
+      apiKey: API_KEY,
+      defaultSender: {
+        email: DEFAULT_SENDER_EMAIL,
+        name: DEFAULT_SENDER_NAME,
+      },
+    });
+
+    sinon.stub(axios, "request");
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+}
 
 function getRequestStub(): sinon.SinonStub {
   return axios.request as sinon.SinonStub;
