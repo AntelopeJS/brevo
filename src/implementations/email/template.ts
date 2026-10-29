@@ -1,24 +1,38 @@
 import type {
   EmailParams,
   InlineTemplate,
+  JsonObject,
+  JsonValue,
   ProviderTemplate,
   TemplateEmailParams,
 } from "@antelopejs/interface-email";
 
-function stringifyTemplateValue(value: unknown): string {
+function isText(value: JsonValue): value is string {
+  return typeof value === "string";
+}
+
+function isScalar(value: JsonValue): value is number | boolean {
+  return (
+    typeof value === "number" ||
+    typeof value === "boolean" ||
+    typeof value === "bigint"
+  );
+}
+
+function isStructured(value: JsonValue): value is JsonValue[] | JsonObject {
+  return Array.isArray(value) || (value !== null && typeof value === "object");
+}
+
+function stringifyTemplateValue(value: JsonValue | undefined): string {
   if (value === null || value === undefined) {
     return "";
   }
 
-  if (typeof value === "string") {
+  if (isText(value)) {
     return value;
   }
 
-  if (
-    typeof value === "number" ||
-    typeof value === "boolean" ||
-    typeof value === "bigint"
-  ) {
+  if (isScalar(value)) {
     return String(value);
   }
 
@@ -26,7 +40,7 @@ function stringifyTemplateValue(value: unknown): string {
     return value.toISOString();
   }
 
-  if (Array.isArray(value) || typeof value === "object") {
+  if (isStructured(value)) {
     return JSON.stringify(value) ?? "";
   }
 
