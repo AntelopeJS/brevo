@@ -1,6 +1,6 @@
 import sinon from "sinon";
 import assert from "node:assert";
-import axios, { type AxiosResponse } from "axios";
+import axios, { AxiosHeaders, type AxiosResponse } from "axios";
 import {
   GetCapabilities,
   Send,
@@ -10,17 +10,9 @@ import {
 
 import { setConfig } from "../implementations/email/client";
 import type {
-  BrevoBatchBody,
   BrevoBatchResponse,
-  BrevoEmailBody,
   BrevoEmailResponse,
 } from "../implementations/email/client";
-
-interface RequestConfig {
-  method?: string;
-  url?: string;
-  data?: unknown;
-}
 
 const API_KEY = "test-api-key";
 const DEFAULT_SENDER_EMAIL = "sender@example.com";
@@ -64,14 +56,15 @@ describe("Email Interface", () => {
       assert.equal(result.provider, "brevo");
 
       const config = getRequestConfig(0);
-      const body = config.data as BrevoEmailBody;
 
       assert.equal(config.method, "post");
       assert.equal(config.url, SMTP_ENDPOINT);
-      assert.equal(body.sender?.email, DEFAULT_SENDER_EMAIL);
-      assert.equal(body.to[0]?.email, DEFAULT_RECIPIENT);
-      assert.equal(body.subject, "Welcome");
-      assert.equal(body.textContent, "Body");
+      assert.deepStrictEqual(config.data, {
+        sender: { email: DEFAULT_SENDER_EMAIL, name: DEFAULT_SENDER_NAME },
+        to: [{ email: DEFAULT_RECIPIENT }],
+        subject: "Welcome",
+        textContent: "Body",
+      });
     });
 
     it("returns missing sender error when sender is not configured", async () => {
@@ -84,7 +77,7 @@ describe("Email Interface", () => {
 
       assert.equal(result.success, false);
       assert.equal(result.error?.code, "MISSING_SENDER");
-      assert.equal(getRequestStub().called, false);
+      assert.equal(requestStub.called, false);
     });
 
     it("maps API error responses", async () => {
@@ -124,7 +117,7 @@ describe("Email Interface", () => {
 
       assert.equal(result.success, true);
       assert.equal(result.status, "queued");
-      assert.equal(getRequestStub().called, false);
+      assert.equal(requestStub.called, false);
     });
   });
 });
@@ -166,11 +159,26 @@ describe("Email Interface", () => {
       assert.equal(result.responses[1]?.messageId, "batch-2");
 
       const config = getRequestConfig(0);
-      const body = config.data as BrevoBatchBody;
 
       assert.equal(config.method, "post");
       assert.equal(config.url, SMTP_ENDPOINT);
-      assert.equal(body.messageVersions.length, 2);
+      assert.deepStrictEqual(config.data, {
+        sender: { email: DEFAULT_SENDER_EMAIL, name: DEFAULT_SENDER_NAME },
+        messageVersions: [
+          {
+            to: [{ email: DEFAULT_RECIPIENT }],
+            subject: "First",
+            textContent: "A",
+          },
+          {
+            to: [{ email: DEFAULT_RECIPIENT }],
+            subject: "Second",
+            textContent: "B",
+          },
+        ],
+        subject: "First",
+        textContent: "A",
+      });
     });
 
     it("fails every batch message when sender is missing", async () => {
@@ -198,7 +206,7 @@ describe("Email Interface", () => {
       assert.equal(result.successful, 0);
       assert.equal(result.failed, 2);
       assert.equal(result.responses[0]?.error?.code, "MISSING_SENDER");
-      assert.equal(getRequestStub().called, false);
+      assert.equal(requestStub.called, false);
     });
   });
 });
@@ -225,11 +233,12 @@ describe("Email Interface", () => {
       assert.equal(result.success, true);
       assert.equal(result.messageId, "template-1");
 
-      const config = getRequestConfig(0);
-      const body = config.data as BrevoEmailBody;
-
-      assert.equal(body.htmlContent, "Hello Ada");
-      assert.equal(body.templateId, undefined);
+      assert.deepStrictEqual(getRequestConfig(0).data, {
+        sender: { email: DEFAULT_SENDER_EMAIL, name: DEFAULT_SENDER_NAME },
+        to: [{ email: DEFAULT_RECIPIENT }],
+        subject: "Template",
+        htmlContent: "Hello Ada",
+      });
     });
 
     it("returns a validation error for invalid provider template IDs", async () => {
@@ -243,7 +252,7 @@ describe("Email Interface", () => {
 
       assert.equal(result.success, false);
       assert.equal(result.error?.code, "INVALID_TEMPLATE_ID");
-      assert.equal(getRequestStub().called, false);
+      assert.equal(requestStub.called, false);
     });
 
     it("sends provider template with numeric template ID", async () => {
@@ -263,11 +272,13 @@ describe("Email Interface", () => {
       assert.equal(result.success, true);
       assert.equal(result.messageId, "template-2");
 
-      const config = getRequestConfig(0);
-      const body = config.data as BrevoEmailBody;
-
-      assert.equal(body.templateId, 42);
-      assert.equal(body.params?.plan, "pro");
+      assert.deepStrictEqual(getRequestConfig(0).data, {
+        sender: { email: DEFAULT_SENDER_EMAIL, name: DEFAULT_SENDER_NAME },
+        to: [{ email: DEFAULT_RECIPIENT }],
+        subject: "Provider template",
+        templateId: 42,
+        params: { plan: "pro" },
+      });
     });
   });
 });
@@ -282,7 +293,7 @@ function useEmailClientSandbox(): void {
       },
     });
 
-    sinon.stub(axios, "request");
+    requestStub = stubAxiosRequest();
   });
 
   afterEach(() => {
@@ -290,18 +301,20 @@ function useEmailClientSandbox(): void {
   });
 }
 
-function getRequestStub(): sinon.SinonStub {
-  return axios.request as sinon.SinonStub;
+function stubAxiosRequest() {
+  return sinon.stub(axios, "request");
 }
 
-function getRequestConfig(index: number): RequestConfig {
-  const call = getRequestStub().getCall(index);
+let requestStub: ReturnType<typeof stubAxiosRequest>;
+
+function getRequestConfig(index: number) {
+  const call = requestStub.getCall(index);
   assert(call, `Request call ${index} not found`);
-  return call.args[0] as RequestConfig;
+  return call.args[0];
 }
 
 function stubRequest(response: StubResponse): void {
-  getRequestStub().resolves(createAxiosResponse(response));
+  requestStub.resolves(createAxiosResponse(response));
 }
 
 interface StubResponse {
@@ -315,5 +328,8 @@ function createAxiosResponse(
   return {
     status: response.status,
     data: response.data,
-  } as AxiosResponse<BrevoEmailResponse | BrevoBatchResponse>;
+    statusText: "",
+    headers: {},
+    config: { headers: new AxiosHeaders() },
+  };
 }

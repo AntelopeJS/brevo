@@ -35,7 +35,7 @@ function stringifyTemplateValue(value: unknown): string {
 
 export function renderTemplate(
   template: InlineTemplate,
-  variables: Record<string, unknown>,
+  variables: NonNullable<TemplateEmailParams["variables"]>,
 ): string {
   return Object.entries(variables).reduce((content, [key, value]) => {
     const tokenPattern = new RegExp(`\\{\\{\\s*${key}\\s*\\}\\}`, "g");

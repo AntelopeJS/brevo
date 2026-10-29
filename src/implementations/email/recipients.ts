@@ -14,8 +14,12 @@ export interface WhitelistResult {
   isEmpty: boolean;
 }
 
+function isAddressString(address: EmailAddress): address is string {
+  return typeof address === "string";
+}
+
 function formatAddress(address: EmailAddress): BrevoAddress {
-  return typeof address === "string"
+  return isAddressString(address)
     ? { email: address }
     : { email: address.email, name: address.name };
 }
@@ -53,7 +57,7 @@ function normalizeAddresses(
 }
 
 function extractEmail(address: EmailAddress): string {
-  return typeof address === "string" ? address : address.email;
+  return isAddressString(address) ? address : address.email;
 }
 
 export function getFirstRecipient(to: EmailAddress | EmailAddress[]): string {
