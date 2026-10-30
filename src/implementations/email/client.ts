@@ -20,7 +20,7 @@ export interface EmailClientConfig {
 
 export interface ApiResponse<T = unknown> {
   status: number;
-  data: T;
+  data: T | undefined;
 }
 
 export interface BrevoEmailBody {
@@ -100,10 +100,38 @@ export function getEmailWhitelist(): string[] | undefined {
   return getConfig().emailWhitelist;
 }
 
+function isText(value: unknown): value is string {
+  return typeof value === "string";
+}
+
+function isEmailResponse(body: unknown): body is BrevoEmailResponse {
+  if (typeof body !== "object" || body === null) {
+    return false;
+  }
+
+  return (
+    (!("messageId" in body) || isText(body.messageId)) &&
+    (!("code" in body) || isText(body.code)) &&
+    (!("message" in body) || isText(body.message))
+  );
+}
+
+function isBatchResponse(body: unknown): body is BrevoBatchResponse {
+  if (!isEmailResponse(body)) {
+    return false;
+  }
+
+  return (
+    !("messageIds" in body) ||
+    (Array.isArray(body.messageIds) && body.messageIds.every(isText))
+  );
+}
+
 async function request<T>(
   method: HttpMethod,
   path: string,
   data: BrevoEmailBody | BrevoBatchBody,
+  accepts: (body: unknown) => body is T,
 ): Promise<ApiResponse<T>> {
   const currentConfig = getConfig();
   const response = await axios.request({
@@ -119,15 +147,16 @@ async function request<T>(
     validateStatus: () => true,
   });
 
-  return { status: response.status, data: response.data as T };
+  const body: unknown = response.data;
+  return { status: response.status, data: accepts(body) ? body : undefined };
 }
 
 export const sendEmail = (
   body: BrevoEmailBody,
 ): Promise<ApiResponse<BrevoEmailResponse>> =>
-  request<BrevoEmailResponse>("post", "/smtp/email", body);
+  request("post", "/smtp/email", body, isEmailResponse);
 
 export const sendBatchEmail = (
   body: BrevoBatchBody,
 ): Promise<ApiResponse<BrevoBatchResponse>> =>
-  request<BrevoBatchResponse>("post", "/smtp/email", body);
+  request("post", "/smtp/email", body, isBatchResponse);
