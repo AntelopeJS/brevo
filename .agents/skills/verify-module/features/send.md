@@ -36,4 +36,4 @@ pnpm exec antelopejs-verify journey "$RUN" send
 
 ## Gotchas
 
-- Brevo is stood in for by `brevo-api.ts`, a local HTTP server that `stand-in.cjs` points the module's requests at through `NODE_OPTIONS`. Journeys read the requests it recorded through its `/__log` endpoint. No journey reaches the real Brevo, see [smoke](smoke.md).
+- Brevo is stood in for by `brevo-api.ts`, a local HTTP server that `stand-in.ts` points the module's requests at through `NODE_OPTIONS`. Journeys read the requests it recorded through its `/__log` endpoint. No journey reaches the real Brevo, see [live-contract](live-contract.md).
