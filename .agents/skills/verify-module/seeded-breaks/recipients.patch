@@ -1,0 +1,13 @@
+diff --git a/src/implementations/email/recipients.ts b/src/implementations/email/recipients.ts
+index 1e90391..f79656d 100644
+--- a/src/implementations/email/recipients.ts
++++ b/src/implementations/email/recipients.ts
+@@ -116,7 +116,7 @@ export function applyWhitelist(
+   const patterns = whitelist.map((entry) => new RegExp(entry));
+   const to = filterWhitelistedAddresses(normalizedTo, patterns);
+   const cc = filterOptionalWhitelistedAddresses(params.cc, patterns);
+-  const bcc = filterOptionalWhitelistedAddresses(params.bcc, patterns);
++  const bcc = normalizeAddresses(params.bcc);
+ 
+   return { to, cc, bcc, isEmpty: to.length === 0 };
+ }
