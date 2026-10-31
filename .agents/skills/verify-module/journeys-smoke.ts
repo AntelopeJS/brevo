@@ -1,6 +1,6 @@
 import type { Journey } from "@antelopejs/tooling-configs/verify";
 
-import { answered, BASE_CONFIG, call, pick, requestsSeen, same, tuple, withSession } from "./session.ts";
+import { answered, API_KEY, BASE_CONFIG, call, pick, requestsSeen, same, tuple, withSession } from "./session.ts";
 
 const capabilities: Journey = {
   title: "GetCapabilities names the provider and the features the module supports",
@@ -37,6 +37,22 @@ const sendThroughStandIn: Journey = {
   },
 };
 
+const requestContract: Journey = {
+  title: "the request the module builds carries the configured api-key header, the leg of the contract a stand-in can check",
+  entryPoint: "`Send` through core against the stand-in for api.brevo.com",
+  async run(context) {
+    await withSession(context, BASE_CONFIG, async (session) => {
+      const sent = await call(session, "send", "Send", [{ to: "ada@example.com", subject: "Hello", text: "Hello" }]);
+      const seen = await requestsSeen(session, "stand-in-log");
+      context.expect(sent.folder, [answered(sent)]);
+      context.expect(seen.result.folder, [
+        same("Brevo received one request", seen.entries.length, 1),
+        same("the api-key header is the configured key", pick(seen.entries[0], "apiKey"), API_KEY),
+      ]);
+    });
+  },
+};
+
 const liveContract: Journey = {
   title: "the module against the real Brevo API",
   entryPoint: "`Send` against https://api.brevo.com/v3 with a sandbox key",
@@ -52,5 +68,6 @@ const liveContract: Journey = {
 export const smokeJourneys = {
   capabilities,
   "send-through-stand-in": sendThroughStandIn,
+  "request-contract": requestContract,
   "live-contract": liveContract,
 };

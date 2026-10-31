@@ -12,5 +12,5 @@ The module talks only to `https://api.brevo.com/v3`, which no journey can reach 
 | [templates](templates.md) | A message is built from an inline template or a Brevo template id. | inline-template, provider-template, invalid-template-id |
 | [batch](batch.md) | Many messages go out in chunks of 1000. | batch-maps-messages, batch-chunks, batch-error-handling, batch-missing-sender, batch-whitelist |
 | [capabilities](capabilities.md) | A consumer asks what the provider supports. | capabilities |
-| [live-contract](live-contract.md) | Sends through the real Brevo API. Always NOT VERIFIED. | live-contract |
+| [live-contract](live-contract.md) | Sends through the real Brevo API. Always NOT VERIFIED. | request-contract, live-contract |
 | [smoke](smoke.md) | The fixed journey every verdict runs. | module-dev, send-through-stand-in |

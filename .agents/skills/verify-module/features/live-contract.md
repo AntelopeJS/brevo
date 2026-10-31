@@ -4,6 +4,7 @@ covers:
 docs:
   - README.md
 journeys:
+  - request-contract
   - live-contract
 ---
 
@@ -13,6 +14,7 @@ What only the real Brevo API can show: that the requests the module builds are a
 
 ## Sub-features
 
+- `request-contract`: one `Send` reaches the stand-in with the configured `api-key` header, the one leg of the contract a stand-in can check.
 - `live-contract`: always NOT VERIFIED. The module hard-codes `https://api.brevo.com/v3` and Brevo offers no sandbox that drops a message, so no journey reaches the real API. A verdict that requires this feature therefore reads NOT VERIFIED, never PASS, until a journey can run against a Brevo sandbox. The smoke feature leaves it out so a diff that touches no Brevo code is judged on the stand-in journeys.
 
 ## How to get to it (user POV)
