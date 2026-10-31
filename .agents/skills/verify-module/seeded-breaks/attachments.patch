@@ -1,0 +1,13 @@
+diff --git a/src/implementations/email/message.ts b/src/implementations/email/message.ts
+index 31d8abe..fd89f62 100644
+--- a/src/implementations/email/message.ts
++++ b/src/implementations/email/message.ts
+@@ -42,7 +42,7 @@ function mapAttachment(attachment: Attachment): BrevoAttachment | null {
+   }
+ 
+   if ("url" in attachment) {
+-    return { name: attachment.filename, url: attachment.url };
++    return { name: attachment.filename, url: attachment.filename };
+   }
+ 
+   const content = mapAttachmentContent(attachment);

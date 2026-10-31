@@ -1,0 +1,13 @@
+diff --git a/src/implementations/email/batch.ts b/src/implementations/email/batch.ts
+index 02bae9c..58b9a54 100644
+--- a/src/implementations/email/batch.ts
++++ b/src/implementations/email/batch.ts
+@@ -52,7 +52,7 @@ export interface BatchScope {
+   sender: BrevoAddress;
+ }
+ 
+-export const BATCH_CHUNK_SIZE = 1000;
++export const BATCH_CHUNK_SIZE = 5000;
+ 
+ export function buildBatchMissingSenderResponse(
+   params: BatchEmailParams,

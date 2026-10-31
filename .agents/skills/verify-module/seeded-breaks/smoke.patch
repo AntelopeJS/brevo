@@ -1,0 +1,13 @@
+diff --git a/src/implementations/email/client.ts b/src/implementations/email/client.ts
+index 19dc7dc..4190e4e 100644
+--- a/src/implementations/email/client.ts
++++ b/src/implementations/email/client.ts
+@@ -74,7 +74,7 @@ export interface BrevoBatchResponse {
+   message?: string;
+ }
+ 
+-const BASE_URL = "https://api.brevo.com/v3";
++const BASE_URL = "https://api.brevo.com/v2";
+ const TIMEOUT = 30000;
+ 
+ type HttpMethod = "get" | "post" | "put" | "delete";
