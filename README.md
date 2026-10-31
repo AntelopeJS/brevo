@@ -108,12 +108,7 @@ const result = await Send({
 
 <!-- antelopejs-docs-compat:end -->
 
-| Package                       | Supported range  |
-| ----------------------------- | ---------------- |
-| `@antelopejs/interface-email` | `>=0.1.0 <0.2.0` |
-| `@antelopejs/interface-core`  | `>=0.2.4 <1.0.0` |
-
-The module is developed and tested against `@antelopejs/core` `^1.16.0` on Node.js 24, with `axios` `^1.13.6`.
+The module is developed and tested on Node.js 24, with `axios` `^1.13.6`.
 
 ## Contributing
 
