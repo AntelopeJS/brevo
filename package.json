@@ -81,6 +81,9 @@
     "implements": [
       "@antelopejs/interface-email"
     ],
-    "test": "src/test/antelope.test.ts"
+    "test": "src/test/antelope.test.ts",
+    "docs": {
+      "standard": true
+    }
   }
 }
