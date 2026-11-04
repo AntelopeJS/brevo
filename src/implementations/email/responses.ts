@@ -20,10 +20,6 @@ export function isHttpSuccess(status: number): boolean {
   return status >= HTTP_SUCCESS_MIN && status <= HTTP_SUCCESS_MAX;
 }
 
-export function getErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
-}
-
 export function createErrorResponse(
   code: string,
   message: string,

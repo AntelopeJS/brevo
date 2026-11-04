@@ -18,7 +18,6 @@ import {
   createErrorResponse,
   createMissingSenderResponse,
   createSuccessResponse,
-  getErrorMessage,
   isHttpSuccess,
 } from "./responses";
 import {
@@ -225,7 +224,7 @@ export async function executeBatchChunk(
   } catch (error) {
     const batchError = createErrorResponse(
       "BATCH_SEND_FAILED",
-      getErrorMessage(error),
+      error instanceof Error ? error.message : String(error),
       true,
     );
     return {

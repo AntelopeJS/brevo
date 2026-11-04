@@ -1,10 +1,10 @@
-# @antelopejs/brevo
+# `@antelopejs/brevo`
 
 <div align="center">
-<a href="https://www.npmjs.com/package/@antelopejs/brevo"><img alt="npm" src="https://img.shields.io/npm/v/@antelopejs/brevo?style=for-the-badge&labelColor=000000&color=000000"></a>
-<a href="./LICENSE"><img alt="License" src="https://img.shields.io/npm/l/@antelopejs/brevo?style=for-the-badge&labelColor=000000&color=000000"></a>
-<a href="https://discord.gg/g4pFt6eXqu"><img src="https://img.shields.io/badge/Discord-18181B?logo=discord&style=for-the-badge&color=000000" alt="Discord"></a>
-<a href="https://github.com/AntelopeJS/interface-email/tree/main/docs"><img src="https://img.shields.io/badge/Docs-18181B?style=for-the-badge&color=000000" alt="Documentation"></a>
+<a href="https://www.npmjs.com/package/@antelopejs/brevo"><img data-illustration alt="npm" src="https://img.shields.io/npm/v/@antelopejs/brevo?style=for-the-badge&labelColor=000000&color=000000"></a>
+<a href="./LICENSE"><img data-illustration alt="License" src="https://img.shields.io/npm/l/@antelopejs/brevo?style=for-the-badge&labelColor=000000&color=000000"></a>
+<a href="https://discord.gg/g4pFt6eXqu"><img data-illustration alt="Discord" src="https://img.shields.io/badge/Discord-18181B?logo=discord&style=for-the-badge&color=000000"></a>
+<a href="https://github.com/AntelopeJS/interface-email/tree/main/docs"><img data-illustration alt="Documentation" src="https://img.shields.io/badge/Docs-18181B?style=for-the-badge&color=000000"></a>
 </div>
 
 The AntelopeJS Brevo module sends transactional email through the [Brevo](https://www.brevo.com) HTTP API. It implements the email interface so application modules can send messages without depending on the provider directly.
@@ -15,7 +15,7 @@ The AntelopeJS Brevo module sends transactional email through the [Brevo](https:
 | ------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
 | [`@antelopejs/interface-email`](https://github.com/AntelopeJS/interface-email) | [Email](https://github.com/AntelopeJS/interface-email/tree/main/docs) |
 
-The module implements `Send`, `SendBatch`, `SendTemplate` and `GetCapabilities`. It supports plain text and HTML messages, batches, inline templates, Brevo template IDs, tags and scheduled sends. Attachments accept URLs, buffers or base64-encoded content; filesystem paths are not supported. Message metadata and priority are not supported.
+The module implements `Send`, `SendBatch`, `SendTemplate`, and `GetCapabilities`. It supports plain text and HTML messages, batches, inline templates, Brevo template IDs, tags, and scheduled sends. An attachment can be a URL, a `Buffer`, or a string with `encoding: "base64"`. The module drops any other attachment and logs an error for a file path attachment. Message metadata and priority are not supported.
 
 ## Install
 
@@ -87,7 +87,7 @@ const result = await Send({
 });
 ```
 
-`result.success` indicates whether the API accepted the request, subject to the whitelist behavior above. A successful send has status `queued`, not a delivery confirmation; `result.error` describes a failure.
+`result.success` tells you whether the Brevo API accepted the request, apart from the whitelist case above. A successful send has the status `queued`, which does not confirm delivery. On a failure, `result.error` holds the error code and message.
 
 `SendTemplate` accepts inline templates with `{{variable}}` substitution or a Brevo template ID as a numeric string. Inline substitution does not escape HTML, so escape untrusted values before inserting them into HTML templates.
 
@@ -108,16 +108,9 @@ const result = await Send({
 
 <!-- antelopejs-docs-compat:end -->
 
-| Package                       | Supported range  |
-| ----------------------------- | ---------------- |
-| `@antelopejs/interface-email` | `>=0.1.0 <0.2.0` |
-| `@antelopejs/interface-core`  | `>=0.2.4 <1.0.0` |
-
-The module is developed and tested against `@antelopejs/core` `^1.16.0` on Node.js 24, with `axios` `^1.13.6`.
-
 ## Contributing
 
-Use Node.js 24 and the pnpm version declared in `package.json`:
+Use the Node.js version in `.nvmrc` and the pnpm version in the `packageManager` field of `package.json`:
 
 ```bash
 pnpm install --frozen-lockfile

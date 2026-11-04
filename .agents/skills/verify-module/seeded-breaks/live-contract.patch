@@ -1,0 +1,13 @@
+diff --git a/src/implementations/email/client.ts b/src/implementations/email/client.ts
+index 19dc7dc..c4ecee0 100644
+--- a/src/implementations/email/client.ts
++++ b/src/implementations/email/client.ts
+@@ -141,7 +141,7 @@ async function request<T>(
+     headers: {
+       accept: "application/json",
+       "content-type": "application/json",
+-      "api-key": currentConfig.apiKey,
++      apikey: currentConfig.apiKey,
+     },
+     timeout: TIMEOUT,
+     validateStatus: () => true,

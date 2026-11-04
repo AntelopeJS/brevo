@@ -1,0 +1,13 @@
+diff --git a/src/implementations/email/template.ts b/src/implementations/email/template.ts
+index 5c1bb71..0151d9e 100644
+--- a/src/implementations/email/template.ts
++++ b/src/implementations/email/template.ts
+@@ -83,7 +83,7 @@ export function buildInlineTemplateEmailParams(
+     providerOptions: params.providerOptions,
+   };
+ 
+-  if (template.type === "html") {
++  if (template.type === "text") {
+     emailParams.html = renderedContent;
+   } else {
+     emailParams.text = renderedContent;

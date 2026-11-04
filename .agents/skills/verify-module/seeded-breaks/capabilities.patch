@@ -1,0 +1,13 @@
+diff --git a/src/implementations/email/index.ts b/src/implementations/email/index.ts
+index ff9565d..303a4b2 100644
+--- a/src/implementations/email/index.ts
++++ b/src/implementations/email/index.ts
+@@ -43,7 +43,7 @@ import {
+ const PROVIDER_CAPABILITIES: ProviderCapabilities = {
+   name: PROVIDER_NAME,
+   features: {
+-    batch: true,
++    batch: false,
+     templates: true,
+     scheduling: true,
+     openTracking: true,

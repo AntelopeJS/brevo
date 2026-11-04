@@ -1,0 +1,13 @@
+diff --git a/src/implementations/email/responses.ts b/src/implementations/email/responses.ts
+index aaab5b1..6d32354 100644
+--- a/src/implementations/email/responses.ts
++++ b/src/implementations/email/responses.ts
+@@ -62,7 +62,7 @@ export function mapApiResponse(
+ 
+   const errorCode = response.data?.code ?? "API_ERROR";
+   const errorMessage = response.data?.message ?? `HTTP ${response.status}`;
+-  return createErrorResponse(errorCode, errorMessage, response.status >= 500);
++  return createErrorResponse(errorCode, errorMessage, response.status >= 600);
+ }
+ 
+ export function createMissingSenderResponse(): EmailResponse {

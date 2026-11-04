@@ -14,7 +14,6 @@ import {
   createErrorResponse,
   createMissingSenderResponse,
   createSuccessResponse,
-  getErrorMessage,
   mapApiResponse,
 } from "./responses";
 import {
@@ -136,7 +135,11 @@ export async function Send(params: EmailParams): Promise<EmailResponse> {
     );
     return mapApiResponse(response);
   } catch (error) {
-    return createErrorResponse("SEND_FAILED", getErrorMessage(error), true);
+    return createErrorResponse(
+      "SEND_FAILED",
+      error instanceof Error ? error.message : String(error),
+      true,
+    );
   }
 }
 
@@ -184,7 +187,7 @@ export async function SendTemplate(
   } catch (error) {
     return createErrorResponse(
       "SEND_TEMPLATE_FAILED",
-      getErrorMessage(error),
+      error instanceof Error ? error.message : String(error),
       true,
     );
   }
