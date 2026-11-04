@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.0.7
+
+[compare changes](https://github.com/AntelopeJS/brevo/compare/v0.0.6...v0.0.7)
+
+### 🩹 Fixes
+
+- Cap the implemented interface-email range below the next minor ([#26](https://github.com/AntelopeJS/brevo/pull/26))
+
+### 💅 Refactors
+
+- Clean the repo with the guardrail pack ([#32](https://github.com/AntelopeJS/brevo/pull/32))
+- **email:** Type template values as JsonValue and narrow them with guards ([#34](https://github.com/AntelopeJS/brevo/pull/34))
+
+### 📖 Documentation
+
+- **readme:** Use one Discord invite ([#39](https://github.com/AntelopeJS/brevo/pull/39))
+- **github:** Send questions and ideas to Discord ([#40](https://github.com/AntelopeJS/brevo/pull/40))
+
+### 📦 Build
+
+- **deps:** Adopt @antelopejs/interface-email 0.1.0 ([#27](https://github.com/AntelopeJS/brevo/pull/27))
+- **deps:** Bump @antelopejs/tooling-configs to 0.2.17 ([#35](https://github.com/AntelopeJS/brevo/pull/35))
+
+### 🏡 Chore
+
+- Adopt the guardrail pack from tooling-configs 0.2.0 ([#24](https://github.com/AntelopeJS/brevo/pull/24))
+- Configure Renovate with the shared preset ([#25](https://github.com/AntelopeJS/brevo/pull/25))
+- Land the cleanup campaign on main ([#45](https://github.com/AntelopeJS/brevo/pull/45))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli ([@Upd4ting](http://github.com/Upd4ting))
+
 ## v0.0.6
 
 [compare changes](https://github.com/AntelopeJS/brevo/compare/v0.0.5...v0.0.6)
