@@ -9,6 +9,8 @@
 
 The AntelopeJS Brevo module sends transactional email through the [Brevo](https://www.brevo.com) HTTP API. It implements the email interface so application modules can send messages without depending on the provider directly.
 
+Part of [AntelopeJS](https://github.com/AntelopeJS/antelopejs), the TypeScript framework where modules depend on contracts and the application chooses the provider. Built by the team behind [AntelopeJS DMS](https://github.com/AntelopeJS/dms).
+
 ## Interfaces
 
 | Interface                                                                      | Documentation                                                         |
