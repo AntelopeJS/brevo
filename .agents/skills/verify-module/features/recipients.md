@@ -1,5 +1,6 @@
 ---
 covers:
+  - src/implementations/email/index.ts
   - src/implementations/email/recipients.ts
 docs:
   - README.md
