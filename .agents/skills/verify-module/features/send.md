@@ -1,9 +1,10 @@
 ---
 covers:
+  - src/implementations/email/client.ts
   - src/implementations/email/index.ts
   - src/implementations/email/message.ts
+  - src/implementations/email/recipients.ts
   - src/implementations/email/responses.ts
-  - src/implementations/email/client.ts
 docs:
   - README.md
 journeys:

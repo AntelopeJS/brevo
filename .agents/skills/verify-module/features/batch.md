@@ -1,6 +1,7 @@
 ---
 covers:
   - src/implementations/email/batch.ts
+  - src/implementations/email/client.ts
   - src/implementations/email/index.ts
   - src/implementations/email/message.ts
   - src/implementations/email/recipients.ts
