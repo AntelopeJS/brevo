@@ -241,6 +241,34 @@ describe("Email Interface", () => {
       });
     });
 
+    it("substitutes variable names and values literally", async () => {
+      stubRequest({ status: 202, data: { messageId: "template-3" } });
+
+      const result = await SendTemplate({
+        to: DEFAULT_RECIPIENT,
+        subject: "Literal",
+        template: {
+          content: "{{q}} {{a.b}} {{ a+ }} {{price}} {{a(}} {{axb}}",
+          type: "html",
+        },
+        variables: {
+          q: "{{price}}",
+          "a.b": "$&",
+          "a+": "y",
+          price: "$1",
+          "a(": "z",
+        },
+      });
+
+      assert.equal(result.success, true);
+      assert.deepStrictEqual(getRequestConfig(0).data, {
+        sender: { email: DEFAULT_SENDER_EMAIL, name: DEFAULT_SENDER_NAME },
+        to: [{ email: DEFAULT_RECIPIENT }],
+        subject: "Literal",
+        htmlContent: "{{price}} $& y $1 z {{axb}}",
+      });
+    });
+
     it("returns a validation error for invalid provider template IDs", async () => {
       const result = await SendTemplate({
         to: DEFAULT_RECIPIENT,
