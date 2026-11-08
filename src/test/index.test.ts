@@ -255,6 +255,28 @@ describe("Email Interface", () => {
       assert.equal(requestStub.called, false);
     });
 
+    for (const id of [
+      "7abc",
+      "1.5",
+      " 7",
+      "-3",
+      "1e3",
+      "",
+      "99999999999999999999",
+    ]) {
+      it(`rejects provider template ID ${JSON.stringify(id)} that is not a whole decimal`, async () => {
+        const result = await SendTemplate({
+          to: DEFAULT_RECIPIENT,
+          subject: "Invalid provider template",
+          template: { id },
+        });
+
+        assert.equal(result.success, false);
+        assert.equal(result.error?.code, "INVALID_TEMPLATE_ID");
+        assert.equal(requestStub.called, false);
+      });
+    }
+
     it("sends provider template with numeric template ID", async () => {
       stubRequest({ status: 202, data: { messageId: "template-2" } });
 
