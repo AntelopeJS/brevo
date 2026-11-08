@@ -280,6 +280,44 @@ describe("Email Interface", () => {
         params: { plan: "pro" },
       });
     });
+
+    it("returns SEND_TEMPLATE_FAILED when the provider template request rejects", async () => {
+      requestStub.rejects(new Error("net"));
+
+      const result = await SendTemplate({
+        to: DEFAULT_RECIPIENT,
+        subject: "Provider template",
+        template: { id: "42" },
+      });
+
+      assert.equal(result.success, false);
+      assert.deepStrictEqual(result.error, {
+        code: "SEND_TEMPLATE_FAILED",
+        message: "net",
+        retryable: true,
+      });
+    });
+
+    it("returns SEND_TEMPLATE_FAILED when inline template rendering throws", async () => {
+      const result = await SendTemplate({
+        to: DEFAULT_RECIPIENT,
+        subject: "Template",
+        template: { content: "{{ name }}", type: "html" },
+        variables: {
+          get name(): never {
+            throw new Error("unreadable variable");
+          },
+        },
+      });
+
+      assert.equal(result.success, false);
+      assert.deepStrictEqual(result.error, {
+        code: "SEND_TEMPLATE_FAILED",
+        message: "unreadable variable",
+        retryable: true,
+      });
+      assert.equal(requestStub.called, false);
+    });
   });
 });
 

@@ -180,10 +180,10 @@ export async function SendTemplate(
 ): Promise<EmailResponse> {
   try {
     if (!isProviderTemplate(params.template)) {
-      return sendInlineTemplate(params);
+      return await sendInlineTemplate(params);
     }
 
-    return sendProviderTemplate(params);
+    return await sendProviderTemplate(params);
   } catch (error) {
     return createErrorResponse(
       "SEND_TEMPLATE_FAILED",
