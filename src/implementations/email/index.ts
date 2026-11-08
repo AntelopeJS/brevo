@@ -92,7 +92,7 @@ async function sendProviderTemplate(
   if (templateId === null) {
     return createErrorResponse(
       "INVALID_TEMPLATE_ID",
-      `Template ID must be a valid number, got: ${params.template.id}`,
+      `Template ID must be a whole decimal number, got: ${params.template.id}`,
       false,
     );
   }
