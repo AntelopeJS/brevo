@@ -262,11 +262,12 @@ describe("Email Interface", () => {
         result.responses.map((response) => [
           response.batchId,
           response.index,
+          response.recipient,
           response.error?.code,
         ]),
         [
-          ["first", 0, "BATCH_SEND_FAILED"],
-          ["second", 1, "BATCH_SEND_FAILED"],
+          ["first", 0, DEFAULT_RECIPIENT, "BATCH_SEND_FAILED"],
+          ["second", 1, DEFAULT_RECIPIENT, "BATCH_SEND_FAILED"],
         ],
       );
       assert.match(
