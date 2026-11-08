@@ -31,10 +31,12 @@ import {
 import {
   BATCH_CHUNK_SIZE,
   type BatchScope,
+  type BatchState,
   appendBatchProgress,
   buildBatchBody,
-  buildBatchMissingSenderResponse,
+  buildBatchFailureResponse,
   createBatchResponse,
+  createBatchSendFailedResponse,
   createInitialBatchState,
   executeBatchChunk,
   splitIntoChunks,
@@ -148,10 +150,20 @@ export async function SendBatch(
 ): Promise<BatchEmailResponse> {
   const sender = resolveSender(params.defaults?.from);
   if (!sender) {
-    return buildBatchMissingSenderResponse(params);
+    return buildBatchFailureResponse(params, createMissingSenderResponse());
   }
 
-  const state = createInitialBatchState(params);
+  let state: BatchState;
+  try {
+    state = createInitialBatchState(params);
+  } catch (error) {
+    return buildBatchFailureResponse(
+      params,
+      createBatchSendFailedResponse(
+        error instanceof Error ? error.message : String(error),
+      ),
+    );
+  }
   if (state.pending.length === 0) {
     return createBatchResponse(params.messages.length, state);
   }

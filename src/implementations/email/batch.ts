@@ -17,7 +17,6 @@ import {
   createApiErrorResponse,
   createBatchItemResponse,
   createErrorResponse,
-  createMissingSenderResponse,
   createSuccessResponse,
   isHttpSuccess,
 } from "./responses";
@@ -44,7 +43,7 @@ interface BatchChunkResult extends BatchProgress {
   shouldStop: boolean;
 }
 
-interface BatchState extends BatchProgress {
+export interface BatchState extends BatchProgress {
   pending: BatchPreparedMessage[];
 }
 
@@ -55,12 +54,13 @@ export interface BatchScope {
 
 export const BATCH_CHUNK_SIZE = 1000;
 
-export function buildBatchMissingSenderResponse(
+export function buildBatchFailureResponse(
   params: BatchEmailParams,
+  error: EmailResponse,
 ): BatchEmailResponse {
   const responses = params.messages.map((message, index) =>
     createBatchItemResponse(
-      createMissingSenderResponse(),
+      error,
       message.batchId,
       index,
       getFirstRecipient(message.to),
@@ -175,6 +175,10 @@ function buildChunkSuccessProgress(
   };
 }
 
+export function createBatchSendFailedResponse(message: string): EmailResponse {
+  return createErrorResponse("BATCH_SEND_FAILED", message, true);
+}
+
 function buildChunkFailureProgress(
   chunk: BatchPreparedMessage[],
   error: EmailResponse,
@@ -216,13 +220,13 @@ export async function executeBatchChunk(
       shouldStop: !continueOnError,
     };
   } catch (error) {
-    const batchError = createErrorResponse(
-      "BATCH_SEND_FAILED",
-      error instanceof Error ? error.message : String(error),
-      true,
-    );
     return {
-      ...buildChunkFailureProgress(chunk, batchError),
+      ...buildChunkFailureProgress(
+        chunk,
+        createBatchSendFailedResponse(
+          error instanceof Error ? error.message : String(error),
+        ),
+      ),
       shouldStop: !continueOnError,
     };
   }
