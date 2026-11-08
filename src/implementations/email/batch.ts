@@ -14,6 +14,7 @@ import {
   sendBatchEmail,
 } from "./client";
 import {
+  createApiErrorResponse,
   createBatchItemResponse,
   createErrorResponse,
   createMissingSenderResponse,
@@ -210,15 +211,8 @@ export async function executeBatchChunk(
       };
     }
 
-    const errorCode = response.data?.code ?? "API_ERROR";
-    const errorMessage = response.data?.message ?? `HTTP ${response.status}`;
-    const error = createErrorResponse(
-      errorCode,
-      errorMessage,
-      response.status >= 500,
-    );
     return {
-      ...buildChunkFailureProgress(chunk, error),
+      ...buildChunkFailureProgress(chunk, createApiErrorResponse(response)),
       shouldStop: !continueOnError,
     };
   } catch (error) {

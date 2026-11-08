@@ -97,6 +97,19 @@ describe("Email Interface", () => {
       assert.equal(result.success, false);
       assert.equal(result.error?.code, "RATE_LIMIT");
       assert.equal(result.error?.message, "Too many requests");
+      assert.equal(result.error?.retryable, true);
+    });
+
+    it("reports a client error response as not retryable", async () => {
+      stubRequest({ status: 400, data: {} });
+
+      const result = await Send({
+        to: DEFAULT_RECIPIENT,
+        subject: "Bad request",
+      });
+
+      assert.equal(result.error?.code, "API_ERROR");
+      assert.equal(result.error?.message, "HTTP 400");
       assert.equal(result.error?.retryable, false);
     });
 
@@ -207,6 +220,24 @@ describe("Email Interface", () => {
       assert.equal(result.failed, 2);
       assert.equal(result.responses[0]?.error?.code, "MISSING_SENDER");
       assert.equal(requestStub.called, false);
+    });
+
+    it("reports a rate-limited batch as retryable", async () => {
+      stubRequest({ status: 429, data: {} });
+
+      const result = await SendBatch({
+        messages: [
+          { to: DEFAULT_RECIPIENT, subject: "First", text: "A" },
+          { to: DEFAULT_RECIPIENT, subject: "Second", text: "B" },
+        ],
+      });
+
+      assert.equal(result.failed, 2);
+      assert.deepStrictEqual(
+        result.responses.map((response) => response.error?.retryable),
+        [true, true],
+      );
+      assert.equal(result.responses[0]?.error?.message, "HTTP 429");
     });
   });
 });
