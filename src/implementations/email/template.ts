@@ -7,7 +7,7 @@ import type {
   TemplateEmailParams,
 } from "@antelopejs/interface-email";
 
-const TEMPLATE_TOKEN = /\{\{\s*(.*?)\s*\}\}/g;
+const TEMPLATE_TOKEN = /\{\{\s*([^{}]*?)\s*\}\}/g;
 
 function isText(value: JsonValue): value is string {
   return typeof value === "string";

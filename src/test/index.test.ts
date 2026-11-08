@@ -248,7 +248,8 @@ describe("Email Interface", () => {
         to: DEFAULT_RECIPIENT,
         subject: "Literal",
         template: {
-          content: "{{q}} {{a.b}} {{ a+ }} {{price}} {{a(}} {{axb}}",
+          content:
+            "{{q}} {{a.b}} {{ a+ }} {{price}} {{a(}} {{axb}} {{ x {{{a+}}}",
           type: "html",
         },
         variables: {
@@ -265,7 +266,7 @@ describe("Email Interface", () => {
         sender: { email: DEFAULT_SENDER_EMAIL, name: DEFAULT_SENDER_NAME },
         to: [{ email: DEFAULT_RECIPIENT }],
         subject: "Literal",
-        htmlContent: "{{price}} $& y $1 z {{axb}}",
+        htmlContent: "{{price}} $& y $1 z {{axb}} {{ x {y}",
       });
     });
 
