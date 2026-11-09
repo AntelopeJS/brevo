@@ -7,6 +7,8 @@ import type {
   TemplateEmailParams,
 } from "@antelopejs/interface-email";
 
+const TEMPLATE_TOKEN = /\{\{\s*([^{}]*?)\s*\}\}/g;
+
 function isText(value: JsonValue): value is string {
   return typeof value === "string";
 }
@@ -51,10 +53,12 @@ export function renderTemplate(
   template: InlineTemplate,
   variables: NonNullable<TemplateEmailParams["variables"]>,
 ): string {
-  return Object.entries(variables).reduce((content, [key, value]) => {
-    const tokenPattern = new RegExp(`\\{\\{\\s*${key}\\s*\\}\\}`, "g");
-    return content.replace(tokenPattern, stringifyTemplateValue(value));
-  }, template.content);
+  const values = new Map(Object.entries(variables));
+  return template.content.replace(
+    TEMPLATE_TOKEN,
+    (token: string, name: string) =>
+      values.has(name) ? stringifyTemplateValue(values.get(name)) : token,
+  );
 }
 
 export function isProviderTemplate(
