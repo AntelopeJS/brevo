@@ -97,6 +97,9 @@ export function buildInlineTemplateEmailParams(
 }
 
 export function parseTemplateId(templateId: string): number | null {
-  const parsedTemplateId = Number.parseInt(templateId, 10);
-  return Number.isNaN(parsedTemplateId) ? null : parsedTemplateId;
+  if (!/^\d+$/.test(templateId)) {
+    return null;
+  }
+  const parsedTemplateId = Number(templateId);
+  return Number.isSafeInteger(parsedTemplateId) ? parsedTemplateId : null;
 }
