@@ -12,8 +12,8 @@ importers:
         specifier: '>=0.2.4 <1.0.0'
         version: 0.2.4
       '@antelopejs/interface-email':
-        specifier: '>=0.1.0 <0.2.0'
-        version: 0.1.0(@antelopejs/interface-core@0.2.4)
+        specifier: '>=0.2.0 <0.3.0'
+        version: 0.2.0(@antelopejs/interface-core@0.2.4)
       axios:
         specifier: ^1.13.6
         version: 1.13.6
@@ -76,8 +76,8 @@ importers:
         specifier: '>=0.2.4 <1.0.0'
         version: 0.2.4
       '@antelopejs/interface-email':
-        specifier: '>=0.1.0 <1.0.0'
-        version: 0.1.0(@antelopejs/interface-core@0.2.4)
+        specifier: '>=0.2.0 <1.0.0'
+        version: 0.2.0(@antelopejs/interface-core@0.2.4)
     devDependencies:
       '@types/node':
         specifier: ^20.5.7
@@ -102,8 +102,8 @@ packages:
   '@antelopejs/interface-core@0.4.0':
     resolution: {integrity: sha512-IPX6dtt3KHknclN4mLOYeRYL2Odz1Pts+dtaZul62NghsBUX/0OFHD4Qhoaf+Beva4hjInbaF918ajr4Z5HVWQ==}
 
-  '@antelopejs/interface-email@0.1.0':
-    resolution: {integrity: sha512-J5iHTEJe09bn1TH24ZQ+mAhwNnERrAWWBjEs+ldL2gwvWyqrL1Sr4U/+olKbMKbCsxrNo+e5niF/8hx56x0wGA==}
+  '@antelopejs/interface-email@0.2.0':
+    resolution: {integrity: sha512-+MF/JZADoa0UPZQM7FICM+rjg9Sg9tzb+SjpXkIu0Df2lPv8QVEI021lCCAHecb8rXjUP+9unWCwKRsBytKVVg==}
     peerDependencies:
       '@antelopejs/interface-core': '>=0.2.4 <1.0.0'
 
@@ -2665,7 +2665,7 @@ snapshots:
     dependencies:
       reflect-metadata: 0.2.2
 
-  '@antelopejs/interface-email@0.1.0(@antelopejs/interface-core@0.2.4)':
+  '@antelopejs/interface-email@0.2.0(@antelopejs/interface-core@0.2.4)':
     dependencies:
       '@antelopejs/interface-core': 0.2.4
 

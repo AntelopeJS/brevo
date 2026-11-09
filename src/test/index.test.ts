@@ -78,6 +78,28 @@ describe("Email Interface", () => {
         { openTracking: false, clickTracking: false, inlineAttachments: false },
       );
     });
+
+    it("claims provider templates, which SendTemplate passes to Brevo as templateId", async () => {
+      stubRequest({ status: 201, data: { messageId: "template-1" } });
+
+      const result = await SendTemplate({
+        to: DEFAULT_RECIPIENT,
+        subject: "Hosted",
+        template: { id: "7" },
+      });
+
+      assert.equal(result.success, true);
+      assert.deepStrictEqual(getRequestConfig(0).data, {
+        sender: { email: DEFAULT_SENDER_EMAIL, name: DEFAULT_SENDER_NAME },
+        to: [{ email: DEFAULT_RECIPIENT }],
+        subject: "Hosted",
+        templateId: 7,
+      });
+
+      const { features } = await GetCapabilities();
+
+      assert.equal(features.providerTemplates, true);
+    });
   });
 });
 

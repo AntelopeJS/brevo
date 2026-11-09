@@ -47,6 +47,7 @@ const PROVIDER_CAPABILITIES: ProviderCapabilities = {
   features: {
     batch: true,
     templates: true,
+    providerTemplates: true,
     scheduling: true,
     openTracking: false,
     clickTracking: false,
