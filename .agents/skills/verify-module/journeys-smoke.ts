@@ -14,7 +14,7 @@ const capabilities: Journey = {
         same(
           "the supported features are exactly the module's",
           pick(answer.value, "features"),
-          { batch: true, templates: true, scheduling: true, openTracking: false, clickTracking: false, inlineAttachments: false, tags: true, metadata: false, priority: false },
+          { batch: true, templates: true, providerTemplates: true, scheduling: true, openTracking: false, clickTracking: false, inlineAttachments: false, tags: true, metadata: false, priority: false },
         ),
       ]);
     });
