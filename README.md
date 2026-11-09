@@ -17,7 +17,7 @@ Part of [AntelopeJS](https://github.com/AntelopeJS/antelopejs), the TypeScript f
 | ------------------------------------------------------------------------------ | --------------------------------------------------------------------- |
 | [`@antelopejs/interface-email`](https://github.com/AntelopeJS/interface-email) | [Email](https://github.com/AntelopeJS/interface-email/tree/main/docs) |
 
-The module implements `Send`, `SendBatch`, `SendTemplate`, and `GetCapabilities`. It supports plain text and HTML messages, batches, inline templates, Brevo template IDs, tags, and scheduled sends. An attachment can be a URL, a `Buffer`, or a string with `encoding: "base64"`. The module drops any other attachment and logs an error for a file path attachment. Message metadata and priority are not supported.
+The module implements `Send`, `SendBatch`, `SendTemplate`, and `GetCapabilities`. It supports plain text and HTML messages, batches, inline templates, Brevo template IDs, tags, and scheduled sends. An attachment can be a URL, a `Buffer`, or a string with `encoding: "base64"`. The module drops any other attachment and logs an error for a file path attachment. Message metadata, priority, the `tracking` options, and inline `cid` attachments are not supported: the Brevo API has no per-message field for them, so `GetCapabilities` reports them as `false`.
 
 ## Install
 

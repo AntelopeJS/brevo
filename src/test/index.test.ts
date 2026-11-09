@@ -31,14 +31,58 @@ describe("Email Interface", () => {
       assert.equal(capabilities.features.batch, true);
       assert.equal(capabilities.features.templates, true);
       assert.equal(capabilities.features.scheduling, true);
-      assert.equal(capabilities.features.openTracking, true);
-      assert.equal(capabilities.features.clickTracking, true);
-      assert.equal(capabilities.features.inlineAttachments, true);
+      assert.equal(capabilities.features.openTracking, false);
+      assert.equal(capabilities.features.clickTracking, false);
+      assert.equal(capabilities.features.inlineAttachments, false);
       assert.equal(capabilities.features.tags, true);
       assert.equal(capabilities.features.metadata, false);
       assert.equal(capabilities.features.priority, false);
     });
+
+    it("claims no tracking or inline attachments, which Send cannot pass to Brevo", async () => {
+      stubRequest({ status: 201, data: { messageId: "email-1" } });
+
+      await Send({
+        to: DEFAULT_RECIPIENT,
+        subject: "Logo",
+        html: '<img src="cid:logo">',
+        tracking: { opens: false, clicks: false },
+        attachments: [
+          {
+            filename: "logo.png",
+            content: Buffer.from("png"),
+            cid: "logo",
+            inline: true,
+          },
+        ],
+      });
+
+      assert.deepStrictEqual(getRequestConfig(0).data, {
+        sender: { email: DEFAULT_SENDER_EMAIL, name: DEFAULT_SENDER_NAME },
+        to: [{ email: DEFAULT_RECIPIENT }],
+        subject: "Logo",
+        htmlContent: '<img src="cid:logo">',
+        attachment: [
+          { name: "logo.png", content: Buffer.from("png").toString("base64") },
+        ],
+      });
+
+      const { features } = await GetCapabilities();
+
+      assert.deepStrictEqual(
+        {
+          openTracking: features.openTracking,
+          clickTracking: features.clickTracking,
+          inlineAttachments: features.inlineAttachments,
+        },
+        { openTracking: false, clickTracking: false, inlineAttachments: false },
+      );
+    });
   });
+});
+
+describe("Email Interface", () => {
+  useEmailClientSandbox();
 
   describe("Send", () => {
     it("sends email with default sender", async () => {
@@ -343,7 +387,13 @@ describe("Email Interface", () => {
         htmlContent: "{{price}} $& y $1 z {{axb}} {{ x {y}",
       });
     });
+  });
+});
 
+describe("Email Interface", () => {
+  useEmailClientSandbox();
+
+  describe("SendTemplate provider IDs and failures", () => {
     it("returns a validation error for invalid provider template IDs", async () => {
       const result = await SendTemplate({
         to: DEFAULT_RECIPIENT,
