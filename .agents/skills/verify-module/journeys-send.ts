@@ -49,13 +49,15 @@ const sendMapsMessage: Journey = {
 };
 
 const apiErrorMapping: Journey = {
-  title: "a Brevo error answers failed with Brevo's code and message, retryable only for a 5xx",
-  entryPoint: "`Send` while Brevo answers 400 then 503",
+  title: "a Brevo error answers failed with Brevo's code and message, retryable only for a 429 or a 5xx",
+  entryPoint: "`Send` while Brevo answers 400, then 429, then 503",
   async run(context) {
     await withSession(context, BASE_CONFIG, async (session) => {
       const message: Json = { to: "ada@example.com", subject: "Hello", text: "Hello" };
       session.api.reply(400, { code: "invalid_parameter", message: "Sender is not valid" });
       const rejected = await call(session, "send-rejected", "Send", [message]);
+      session.api.reply(429, { code: "too_many_requests", message: "Rate limit exceeded" });
+      const limited = await call(session, "send-rate-limited", "Send", [message]);
       session.api.reply(503, null);
       const unavailable = await call(session, "send-unavailable", "Send", [message]);
       context.expect(rejected.folder, [
@@ -64,6 +66,10 @@ const apiErrorMapping: Journey = {
         same("the code is Brevo's", pick(rejected.value, "error", "code"), "invalid_parameter"),
         same("the message is Brevo's", pick(rejected.value, "error", "message"), "Sender is not valid"),
         same("a 400 is not retryable", pick(rejected.value, "error", "retryable"), false),
+      ]);
+      context.expect(limited.folder, [
+        same("the code is Brevo's", pick(limited.value, "error", "code"), "too_many_requests"),
+        same("a 429 is retryable", pick(limited.value, "error", "retryable"), true),
       ]);
       context.expect(unavailable.folder, [
         same("an empty 503 answers API_ERROR", pick(unavailable.value, "error", "code"), "API_ERROR"),

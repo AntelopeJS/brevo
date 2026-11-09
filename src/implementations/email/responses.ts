@@ -11,6 +11,10 @@ const HTTP_SUCCESS_MIN = 200;
 
 const HTTP_SUCCESS_MAX = 299;
 
+const HTTP_TOO_MANY_REQUESTS = 429;
+
+const HTTP_SERVER_ERROR_MIN = 500;
+
 const MISSING_SENDER_CODE = "MISSING_SENDER";
 
 const MISSING_SENDER_MESSAGE =
@@ -53,6 +57,21 @@ export function createBatchItemResponse(
   return { ...base, batchId, index, recipient };
 }
 
+function isRetryableStatus(status: number): boolean {
+  return status === HTTP_TOO_MANY_REQUESTS || status >= HTTP_SERVER_ERROR_MIN;
+}
+
+/** Builds the failed response for a non-2xx Brevo API reply. */
+export function createApiErrorResponse(
+  response: ApiResponse<BrevoEmailResponse>,
+): EmailResponse {
+  return createErrorResponse(
+    response.data?.code ?? "API_ERROR",
+    response.data?.message ?? `HTTP ${response.status}`,
+    isRetryableStatus(response.status),
+  );
+}
+
 export function mapApiResponse(
   response: ApiResponse<BrevoEmailResponse>,
 ): EmailResponse {
@@ -60,9 +79,7 @@ export function mapApiResponse(
     return createSuccessResponse(response.data?.messageId);
   }
 
-  const errorCode = response.data?.code ?? "API_ERROR";
-  const errorMessage = response.data?.message ?? `HTTP ${response.status}`;
-  return createErrorResponse(errorCode, errorMessage, response.status >= 500);
+  return createApiErrorResponse(response);
 }
 
 export function createMissingSenderResponse(): EmailResponse {

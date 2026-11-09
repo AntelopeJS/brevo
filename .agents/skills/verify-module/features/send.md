@@ -21,7 +21,7 @@ An application module calls `Send` of the email interface; the module turns it i
 ## Sub-features
 
 - `send-maps-message`: to, cc, bcc, replyTo, subject, html, text, tags and a schedule reach Brevo as the documented fields, with the configured api key and the default sender; the answer is `queued` with Brevo's message id.
-- `api-error-mapping`: a 400 answers failed with Brevo's own code and message and is not retryable; an empty 503 answers `API_ERROR` / `HTTP 503` and is retryable.
+- `api-error-mapping`: a 400 answers failed with Brevo's own code and message and is not retryable; a 429 keeps Brevo's code and is retryable; an empty 503 answers `API_ERROR` / `HTTP 503` and is retryable.
 - `missing-sender`: with no `defaultSender` and no `from`, nothing is sent and the answer is `MISSING_SENDER`; a `from` address becomes the sender.
 - `network-failure`: when Brevo cannot be reached the answer is a retryable `SEND_FAILED`.
 
