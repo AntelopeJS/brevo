@@ -193,7 +193,13 @@ describe("Email Interface", () => {
         textContent: "A",
       });
     });
+  });
+});
 
+describe("Email Interface", () => {
+  useEmailClientSandbox();
+
+  describe("SendBatch failures", () => {
     it("fails every batch message when sender is missing", async () => {
       setConfig({ apiKey: API_KEY });
 

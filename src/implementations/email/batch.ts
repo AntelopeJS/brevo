@@ -16,7 +16,7 @@ import {
 import {
   createApiErrorResponse,
   createBatchItemResponse,
-  createErrorResponse,
+  createBatchSendFailedResponse,
   createSuccessResponse,
   isHttpSuccess,
 } from "./responses";
@@ -173,10 +173,6 @@ function buildChunkSuccessProgress(
     successful: responses.length,
     failed: 0,
   };
-}
-
-export function createBatchSendFailedResponse(message: string): EmailResponse {
-  return createErrorResponse("BATCH_SEND_FAILED", message, true);
 }
 
 function buildChunkFailureProgress(

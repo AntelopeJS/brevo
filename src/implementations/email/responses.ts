@@ -72,6 +72,11 @@ export function createApiErrorResponse(
   );
 }
 
+/** Builds the failed response for batch messages that were never delivered to Brevo. */
+export function createBatchSendFailedResponse(message: string): EmailResponse {
+  return createErrorResponse("BATCH_SEND_FAILED", message, true);
+}
+
 export function mapApiResponse(
   response: ApiResponse<BrevoEmailResponse>,
 ): EmailResponse {

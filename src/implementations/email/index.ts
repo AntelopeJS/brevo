@@ -11,6 +11,7 @@ import type {
 import { sendEmail } from "./client";
 import {
   PROVIDER_NAME,
+  createBatchSendFailedResponse,
   createErrorResponse,
   createMissingSenderResponse,
   createSuccessResponse,
@@ -36,7 +37,6 @@ import {
   buildBatchBody,
   buildBatchFailureResponse,
   createBatchResponse,
-  createBatchSendFailedResponse,
   createInitialBatchState,
   executeBatchChunk,
   splitIntoChunks,
