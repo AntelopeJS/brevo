@@ -193,7 +193,13 @@ describe("Email Interface", () => {
         textContent: "A",
       });
     });
+  });
+});
 
+describe("Email Interface", () => {
+  useEmailClientSandbox();
+
+  describe("SendBatch failures", () => {
     it("fails every batch message when sender is missing", async () => {
       setConfig({ apiKey: API_KEY });
 
@@ -238,6 +244,43 @@ describe("Email Interface", () => {
         [true, true],
       );
       assert.equal(result.responses[0]?.error?.message, "HTTP 429");
+    });
+
+    it("fails every batch message when a whitelist pattern is invalid", async () => {
+      setConfig({
+        apiKey: API_KEY,
+        defaultSender: { email: DEFAULT_SENDER_EMAIL },
+        emailWhitelist: ["("],
+      });
+
+      const result = await SendBatch({
+        messages: [
+          { to: DEFAULT_RECIPIENT, subject: "First", batchId: "first" },
+          { to: DEFAULT_RECIPIENT, subject: "Second", batchId: "second" },
+        ],
+      });
+
+      assert.equal(result.success, false);
+      assert.equal(result.total, 2);
+      assert.equal(result.successful, 0);
+      assert.equal(result.failed, 2);
+      assert.deepStrictEqual(
+        result.responses.map((response) => [
+          response.batchId,
+          response.index,
+          response.recipient,
+          response.error?.code,
+        ]),
+        [
+          ["first", 0, DEFAULT_RECIPIENT, "BATCH_SEND_FAILED"],
+          ["second", 1, DEFAULT_RECIPIENT, "BATCH_SEND_FAILED"],
+        ],
+      );
+      assert.match(
+        result.responses[0]?.error?.message ?? "",
+        /Invalid regular expression/,
+      );
+      assert.equal(requestStub.called, false);
     });
   });
 });
