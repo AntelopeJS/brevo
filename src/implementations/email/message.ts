@@ -107,7 +107,14 @@ export function buildEmailBody(
   return body;
 }
 
-export function buildMessageVersion(params: EmailParams): BrevoMessageVersion {
+/**
+ * Builds one Brevo message version. The subject, and the html and text pair, are left out when they equal
+ * `defaults`, because the batch body carries them at the top level and Brevo applies them to every version.
+ */
+export function buildMessageVersion(
+  params: EmailParams,
+  defaults: Partial<EmailParams> | undefined,
+): BrevoMessageVersion {
   const version: BrevoMessageVersion = {
     to: formatAddresses(params.to) ?? [],
   };
@@ -116,10 +123,13 @@ export function buildMessageVersion(params: EmailParams): BrevoMessageVersion {
   const bcc = formatAddresses(params.bcc);
   const replyTo = formatSingleAddress(params.replyTo);
   const attachments = mapAttachments(params.attachments);
+  const hasOwnContent =
+    params.html !== defaults?.html || params.text !== defaults?.text;
 
-  if (params.subject) version.subject = params.subject;
-  if (params.html) version.htmlContent = params.html;
-  if (params.text) version.textContent = params.text;
+  if (params.subject && params.subject !== defaults?.subject)
+    version.subject = params.subject;
+  if (hasOwnContent && params.html) version.htmlContent = params.html;
+  if (hasOwnContent && params.text) version.textContent = params.text;
   if (cc) version.cc = cc;
   if (bcc) version.bcc = bcc;
   if (replyTo) version.replyTo = replyTo;
