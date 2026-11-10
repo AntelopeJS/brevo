@@ -138,7 +138,9 @@ export function buildBatchBody(
   const firstParams = chunk[0]?.params;
   const body: BrevoBatchBody = {
     sender: scope.sender,
-    messageVersions: chunk.map((entry) => buildMessageVersion(entry.params)),
+    messageVersions: chunk.map((entry) =>
+      buildMessageVersion(entry.params, scope.defaults),
+    ),
   };
 
   const subject = scope.defaults?.subject ?? firstParams?.subject;
