@@ -1,5 +1,22 @@
 # Changelog
 
+## v0.0.9
+
+[compare changes](https://github.com/AntelopeJS/brevo/compare/v0.0.8...v0.0.9)
+
+### 🔥 Performance
+
+- **email:** Send batch defaults content once instead of in every message version ([#63](https://github.com/AntelopeJS/brevo/pull/63))
+
+### 📦 Build
+
+- **deps:** Bump @antelopejs/tooling-configs to 0.5.0 ([#61](https://github.com/AntelopeJS/brevo/pull/61))
+- **deps:** Bump @antelopejs/tooling-configs to 0.5.1 ([#62](https://github.com/AntelopeJS/brevo/pull/62))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli ([@Upd4ting](http://github.com/Upd4ting))
+
 ## v0.0.8
 
 [compare changes](https://github.com/AntelopeJS/brevo/compare/v0.0.7...v0.0.8)
