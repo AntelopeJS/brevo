@@ -44,7 +44,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/brevo",
-        version: "^0.0.6",
+        version: "^0.0.9",
       },
       config: {
         apiKey: "",
