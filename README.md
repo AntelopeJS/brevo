@@ -44,7 +44,7 @@ export default defineConfig({
       source: {
         type: "package",
         package: "@antelopejs/brevo",
-        version: "^0.0.9",
+        version: ">=0.0.9 <0.1.0",
       },
       config: {
         apiKey: "",
@@ -108,8 +108,8 @@ const result = await Send({
 
 | Package                       | Supported        | Tested with |
 | ----------------------------- | ---------------- | ----------- |
-| `@antelopejs/interface-core`  | `>=0.2.4 <1.0.0` | `0.4.0`     |
-| `@antelopejs/interface-email` | `>=0.2.0 <0.3.0` | `0.2.0`     |
+| `@antelopejs/interface-core`  | `>=0.5.1 <0.6.0` | `0.5.1`     |
+| `@antelopejs/interface-email` | `>=0.2.1 <0.3.0` | `0.2.1`     |
 
 <!-- antelopejs-docs-compat:end -->
 
