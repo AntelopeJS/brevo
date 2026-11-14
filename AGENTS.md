@@ -4,7 +4,7 @@ The AntelopeJS module that implements `@antelopejs/interface-email` on the Brevo
 
 ## Versioning
 
-The `@antelopejs/interface-core` and `@antelopejs/interface-email` ranges appear in `package.json`, `playground/package.json`, and the compatibility table in `README.md`; when you change a minimum, change all three together. Every `@antelopejs/*` range stops below the next minor of its floor: `>=0.4.0 <0.5.0` on a 0.x package, `~1.21.0` on a 1.x one. The `dependency:ranges` step of `pnpm run checks` enforces it in every tracked `package.json`.
+The `@antelopejs/interface-core` and `@antelopejs/interface-email` ranges appear in `package.json`, `playground/package.json`, and the compatibility table in `README.md`; when you change a minimum, change all three together. Every `@antelopejs/*` range stops below the next minor of its floor: `>=0.5.1 <0.6.0` on a 0.x package, `~1.23.3` on a 1.x one. The `dependency:ranges` step of `pnpm run checks` enforces it in every tracked `package.json`.
 
 ## Tests
 
