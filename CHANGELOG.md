@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.0.10
+
+[compare changes](https://github.com/AntelopeJS/brevo/compare/v0.0.9...v0.0.10)
+
+### 📖 Documentation
+
+- **readme:** Adopt the AntelopeJS framework README style ([#64](https://github.com/AntelopeJS/brevo/pull/64))
+- **readme:** Range the config example on the current 0.0.9 release ([#65](https://github.com/AntelopeJS/brevo/pull/65))
+
+### 📦 Build
+
+- **deps:** Move to tooling-configs 0.7.1 and cap @antelopejs ranges below the next minor ([#67](https://github.com/AntelopeJS/brevo/pull/67))
+- Move to @antelopejs/tooling-configs 0.8 and the three-tier CI ([#68](https://github.com/AntelopeJS/brevo/pull/68))
+
+### 🤖 CI
+
+- Run the check and test jobs on Windows too ([#66](https://github.com/AntelopeJS/brevo/pull/66))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli
+
 ## v0.0.9
 
 [compare changes](https://github.com/AntelopeJS/brevo/compare/v0.0.8...v0.0.9)
