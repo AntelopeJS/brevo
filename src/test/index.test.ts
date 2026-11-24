@@ -409,6 +409,18 @@ describe("Email Interface", () => {
         htmlContent: "{{price}} $& y $1 z {{axb}} {{ x {y}",
       });
     });
+
+    it("renders a template of 3000 spaces inside a token in under 100 ms", async () => {
+      stubRequest({ status: 202, data: { messageId: "template-4" } });
+
+      const startedAt = performance.now();
+      await SendTemplate({
+        to: DEFAULT_RECIPIENT,
+        subject: "Slow",
+        template: { content: `{{${" ".repeat(3000)}x`, type: "html" },
+      });
+      assert.ok(performance.now() - startedAt < 100);
+    });
   });
 });
 

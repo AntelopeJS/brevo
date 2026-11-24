@@ -1,3 +1,4 @@
+import { renderInlineTemplate } from "@antelopejs/interface-email";
 import { Logging } from "@antelopejs/interface-core/logging";
 import type {
   BatchEmailParams,
@@ -27,7 +28,6 @@ import {
   buildInlineTemplateEmailParams,
   isProviderTemplate,
   parseTemplateId,
-  renderTemplate,
 } from "./template";
 import {
   BATCH_CHUNK_SIZE,
@@ -69,7 +69,10 @@ async function sendInlineTemplate(
     );
   }
 
-  const rendered = renderTemplate(params.template, params.variables ?? {});
+  const rendered = renderInlineTemplate(
+    params.template.content,
+    params.variables ?? {},
+  );
   return Send(
     buildInlineTemplateEmailParams(params, params.template, rendered),
   );
