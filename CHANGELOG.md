@@ -1,5 +1,29 @@
 # Changelog
 
+## v0.0.11
+
+[compare changes](https://github.com/AntelopeJS/brevo/compare/v0.0.10...v0.0.11)
+
+### 🩹 Fixes
+
+- **email:** Render inline templates with renderInlineTemplate ([#75](https://github.com/AntelopeJS/brevo/pull/75))
+- **deps:** Depend on the stable @antelopejs/interface-email
+
+### 🏡 Chore
+
+- **deps:** Update dependency oxlint-tsgolint to v7.0.2008 ([#77](https://github.com/AntelopeJS/brevo/pull/77))
+- **deps:** Update dependency rimraf to v6.1.4 ([#78](https://github.com/AntelopeJS/brevo/pull/78))
+
+### 🤖 CI
+
+- Roll out trunk CI with merge queue ([#71](https://github.com/AntelopeJS/brevo/pull/71))
+- Re-sync the AntelopeJS pack for the release app ([#73](https://github.com/AntelopeJS/brevo/pull/73))
+- Stop forwarding the retired RELEASE_GITHUB_TOKEN ([#74](https://github.com/AntelopeJS/brevo/pull/74))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli
+
 ## v0.0.10
 
 [compare changes](https://github.com/AntelopeJS/brevo/compare/v0.0.9...v0.0.10)
