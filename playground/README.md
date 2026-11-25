@@ -16,9 +16,9 @@ pnpm dev
 
 <!-- antelopejs-docs-compat:start -->
 
-| Package                       | Supported                | Tested with              |
-| ----------------------------- | ------------------------ | ------------------------ |
-| `@antelopejs/interface-core`  | `>=0.5.1 <0.6.0`         | `0.5.1`                  |
-| `@antelopejs/interface-email` | `0.2.2-next.61.g99be894` | `0.2.2-next.61.g99be894` |
+| Package                       | Supported        | Tested with |
+| ----------------------------- | ---------------- | ----------- |
+| `@antelopejs/interface-core`  | `>=0.5.1 <0.6.0` | `0.5.1`     |
+| `@antelopejs/interface-email` | `>=0.2.2 <0.3.0` | `0.2.2`     |
 
 <!-- antelopejs-docs-compat:end -->
