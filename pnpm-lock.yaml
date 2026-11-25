@@ -76,8 +76,8 @@ importers:
         specifier: '>=0.5.1 <0.6.0'
         version: 0.5.1
       '@antelopejs/interface-email':
-        specifier: 0.2.2-next.61.g99be894
-        version: 0.2.2-next.61.g99be894(@antelopejs/interface-core@0.5.1)
+        specifier: '>=0.2.2 <0.3.0'
+        version: 0.2.2(@antelopejs/interface-core@0.5.1)
     devDependencies:
       '@types/node':
         specifier: ^20.5.7
@@ -102,11 +102,6 @@ packages:
 
   '@antelopejs/interface-email@0.2.2':
     resolution: {integrity: sha512-x+O6vZq1j72WWqsRltjGzYmwVA2zFIgOt/aP6Cz4el4jabRlEWm19g1/KXrYLEXv+4/WlXntPwUgkNdH+qzaLQ==}
-    peerDependencies:
-      '@antelopejs/interface-core': '>=0.5.1 <0.6.0'
-
-  '@antelopejs/interface-email@0.2.2-next.61.g99be894':
-    resolution: {integrity: sha512-opSAVIv37dWIGKkd3EsUtMiy4/Ysu79LrryeDZcltO8c1oG3XYZyZshn+B9a+vlo073K+S6S8pdeznheKrm/FQ==}
     peerDependencies:
       '@antelopejs/interface-core': '>=0.5.1 <0.6.0'
 
@@ -2801,10 +2796,6 @@ snapshots:
       reflect-metadata: 0.2.2
 
   '@antelopejs/interface-email@0.2.2(@antelopejs/interface-core@0.5.1)':
-    dependencies:
-      '@antelopejs/interface-core': 0.5.1
-
-  '@antelopejs/interface-email@0.2.2-next.61.g99be894(@antelopejs/interface-core@0.5.1)':
     dependencies:
       '@antelopejs/interface-core': 0.5.1
 
