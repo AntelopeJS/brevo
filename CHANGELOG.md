@@ -1,5 +1,32 @@
 # Changelog
 
+## v0.0.12
+
+[compare changes](https://github.com/AntelopeJS/brevo/compare/v0.0.11...v0.0.12)
+
+### 🩹 Fixes
+
+- **playground:** Require stable interface-email range ([#80](https://github.com/AntelopeJS/brevo/pull/80))
+
+### 📦 Build
+
+- Bump tooling-configs to 0.10.7 and pnpm to 10.34.9 ([#83](https://github.com/AntelopeJS/brevo/pull/83))
+- **ci:** Bump tooling-configs to 0.10.12 and sync ([#86](https://github.com/AntelopeJS/brevo/pull/86))
+- **deps:** Bump tooling-configs to 0.10.14 and sync ([#89](https://github.com/AntelopeJS/brevo/pull/89))
+
+### 🏡 Chore
+
+- **deps:** Update dependency @antelopejs/core to ~1.24.0 ([#81](https://github.com/AntelopeJS/brevo/pull/81))
+- **deps:** Update dependency @types/node to v20.19.43 ([#82](https://github.com/AntelopeJS/brevo/pull/82))
+- **deps:** Update dependency axios to v1.21.1 ([#84](https://github.com/AntelopeJS/brevo/pull/84))
+- **deps:** Update dependency dotenv-cli to v11.1.0 ([#85](https://github.com/AntelopeJS/brevo/pull/85))
+- **deps:** Update antelopejs tooling configs ([#79](https://github.com/AntelopeJS/brevo/pull/79))
+- **deps:** Update dependency @antelopejs/core to v1.24.9 ([#87](https://github.com/AntelopeJS/brevo/pull/87))
+
+### ❤️ Contributors
+
+- Antony Rizzitelli
+
 ## v0.0.11
 
 [compare changes](https://github.com/AntelopeJS/brevo/compare/v0.0.10...v0.0.11)
